@@ -76,7 +76,7 @@ video {
 
 .section {
   margin: 5rem 0;
-  padding: 10rem 0 5rem;
+  /* padding: 10rem 0 5rem; */
   overflow: hidden;
 }
 
@@ -1086,6 +1086,53 @@ span.psw {
     border-radius: 8px;
     font-weight: bold;
     transition: 0.2s;
+}
+
+/* ==== Form modal thêm nhân viên (prefix: nv-) ==== */
+.nv-form-modal {
+  max-width: 520px;
+  margin: auto;
+  background: #f9f9f9;
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+  padding: 38px 36px 32px 36px;
+  border: 1.5px solid #e0e0e0;
+}
+.nv-form-modal-title {
+  color: #005c97;
+  font-size: 2.3rem;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+.nv-form-group {
+  margin-bottom: 18px;
+}
+.nv-form-label {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.nv-form-input,
+.nv-form-select {
+  font-size: 1.15rem;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #b2bec3;
+  width: 100%;
+  margin-top: 6px;
+  background: #fff;
+}
+.nv-form-select {
+  padding: 12px 16px;
+}
+.nv-btn-modal {
+  font-size: 1.18rem;
+  padding: 14px 0;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 }
 
 

@@ -1,7 +1,12 @@
-@include('admin.header')
+@extends('admin.layouts.app')
+@section('title', 'Trang chủ Admin')
+@push('styles')
+<link rel="stylesheet" href="{{ asset('admin/css/trangchuStyle.css') }}">
+@endpush
+@section('content')
 
-<section class="services">
-  <div class="container">
+<section class="services-bg">
+  <div class="container services">
     <div class="title">
       <h1>Welcome to the <span>gym management system</span></h1>
     </div>
@@ -31,15 +36,14 @@
         <h4>Kiểm tra chỉ số BMI</h4>
       </div>
       <div class="box col-sm-6 col-md-4">
-        <a class="nav-link text-white" href="{{ route('admin.logout') }}"><i class="fa-solid fa-right-from-bracket"></i></a>
         <h4>Đăng xuất</h4>
       </div>
       <div class="box col-sm-6 col-md-4">
-        <a class="nav-link text-white" href="{{ route('admin.user') }}"><i class="fa-solid fa-user-plus"></i></a>
+        
         <h4>Thay đổi mật khẩu</h4>
       </div>
     </div>
   </div>
 </section>
 
-@include('admin.footer') 
+@endsection

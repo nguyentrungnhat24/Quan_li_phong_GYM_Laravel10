@@ -8,7 +8,7 @@ use App\Http\Controllers\GoiTapController;
 use App\Http\Controllers\LichTapController;
 use App\Http\Controllers\DungCuController;
 use App\Http\Controllers\DanhMucDungCuController;
-
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,7 +37,7 @@ Route::post('/signin', [App\Http\Controllers\Auth\LoginController::class, 'login
 
 // Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function () { return view('admin.trangchu'); })->name('trangchu');
+    Route::get('/trangchu', [AdminController::class, 'index'])->name('trangchu');
 
     
 
@@ -92,4 +92,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/thongke', function () { return view('admin.thongke'); })->name('thongke');
     Route::get('/bmi', function () { return view('admin.bmi'); })->name('bmi');
+});
+
+Route::get('/test', function () {
+    return 'Test OK';
 });
