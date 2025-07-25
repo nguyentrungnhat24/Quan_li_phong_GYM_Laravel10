@@ -7,8 +7,8 @@
 
 <section class="services-bg">
   <div class="container services">
-    <div class="title">
-      <h1>Welcome to the <span>gym management system</span></h1>
+    <div class="title" >
+    <h1 style="margin-bottom: 2rem; font-size: 3rem !important; text-align: center;">Chào mừng bạn đến với <span>hệ thống quản lý phòng gym</span></h1>
     </div>
     <div class="services_boxes">
       <div class="box">

@@ -418,6 +418,18 @@ video {
     width: 30rem;
   }
 }
+
+@media (max-width: 991.98px) {
+  .admin-header .navbar-brand {
+      font-size: 2rem !important;
+      padding: 0 10px !important;
+      margin-right: 16px !important;
+  }
+  .admin-header .navbar-nav {
+      font-size: 1.2rem !important;
+      gap: 0.5rem !important;
+  }
+}
 /* =========== Service ============ */
 .service .row {
   display: grid;

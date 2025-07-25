@@ -34,20 +34,20 @@
         <input type="text" name="diachi" value="{{ old('diachi') }}" required class="nv-form-input">
         @error('diachi')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
-      <div class="nv-form-group">
+      <!-- <div class="nv-form-group">
         <label class="nv-form-label">Vai trò</label>
         <input type="text" name="vaitro" value="{{ old('vaitro') }}" required class="nv-form-input">
         @error('vaitro')<div class="text-danger">{{ $message }}</div>@enderror
-      </div>
+      </div> -->
       <div class="nv-form-group">
-        <label class="nv-form-label">Chọn quyền</label>
-        <select name="role" class="nv-form-select">
-          <option value="Nhân viên quản lý thiết bị" {{ old('role')=='Nhân viên quản lý thiết bị' ? 'selected' : '' }}>Nhân viên quản lý thiết bị</option>
-          <option value="Bảo vệ" {{ old('role')=='Bảo vệ' ? 'selected' : '' }}>Bảo vệ</option>
-          <option value="Nhân viên quản lý chung" {{ old('role')=='Nhân viên quản lý chung' ? 'selected' : '' }}>Nhân viên quản lý chung</option>
-          <option value="Quản lý hệ thống" {{ old('role')=='Quản lý hệ thống' ? 'selected' : '' }}>Quản lý hệ thống</option>
+        <label class="nv-form-label">Chọn vai trò</label>
+        <select name="vaitro" class="nv-form-select">
+          <option value="Nhân viên quản lý thiết bị" {{ old('vaitro')=='Nhân viên quản lý thiết bị' ? 'selected' : '' }}>Nhân viên quản lý thiết bị</option>
+          <option value="Bảo vệ" {{ old('vaitro')=='Bảo vệ' ? 'selected' : '' }}>Bảo vệ</option>
+          <option value="Nhân viên quản lý chung" {{ old('vaitro')=='Nhân viên quản lý chung' ? 'selected' : '' }}>Nhân viên quản lý chung</option>
+          <option value="Quản lý hệ thống" {{ old('vaitro')=='Quản lý hệ thống' ? 'selected' : '' }}>Quản lý hệ thống</option>
         </select>
-        @error('role')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('vaitro')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <input type="submit" name="themmoi" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Đăng ký" onclick="return ktEmail('txtEmail','msgEmail','Sai định dạng Email !')">
       @if(session('success'))
@@ -81,7 +81,7 @@
       <div class="nv-form-group">
         <label class="nv-form-label">Hình ảnh</label>
         <input type="file" name="image" class="nv-form-input">
-        <img id="update-image-preview" src="" style="width:60px; margin-top:8px; border-radius:8px; display:none;">
+        <img id="update-image-preview" src="admin" style="width:60px; margin-top:8px; border-radius:8px; display:none;">
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Số điện thoại</label>
@@ -95,13 +95,13 @@
         <label class="nv-form-label">Địa chỉ</label>
         <input type="text" name="diachi" id="update-diachi" required class="nv-form-input">
       </div>
-      <div class="nv-form-group">
+      <!-- <div class="nv-form-group">
         <label class="nv-form-label">Vai trò</label>
         <input type="text" name="vaitro" id="update-vaitro" required class="nv-form-input">
-      </div>
+      </div> -->
       <div class="nv-form-group">
-        <label class="nv-form-label">Chọn quyền</label>
-        <select name="role" id="update-role" class="nv-form-select">
+        <label class="nv-form-label">Chọn vai trò</label>
+        <select name="vaitro" id="update-vaitro" class="nv-form-select">
           <option value="Nhân viên quản lý thiết bị">Nhân viên quản lý thiết bị</option>
           <option value="Bảo vệ">Bảo vệ</option>
           <option value="Nhân viên quản lý chung">Nhân viên quản lý chung</option>
@@ -150,7 +150,7 @@ function openUpdateModal() {
     <div class="d-flex flex-wrap" style="gap: 2.5rem; justify-content: flex-start;">
         @foreach($nhanviens as $nv)
             <div class="card" style="flex: 0 0 23%; max-width: 23%; min-width: 260px; min-height: 410px; box-shadow: 0 8px 18px rgba(0,0,0,0.25); margin-bottom: 2.5rem; border-radius: 18px; padding: 0; background: linear-gradient(160deg, #a8edea 0%, #005c97 100%); position:relative; display:flex; flex-direction:column; align-items:center;">
-                <img class="avatar" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: #fff;" src="{{ asset($nv['image']) }}">
+                <img class="avatar" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: #fff;" src="admin{{ asset($nv['image']) }}">
                 <div style="flex:1; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                   <h3 class="text-center" style="font-size:1.85rem; font-weight:700; letter-spacing:1px; margin-top:10px; text-transform:uppercase; color:#0f2341;">{{ $nv['tennv'] }}</h3>
                   <div class="text-center mb-2" style="font-size:1.25rem; color:#222; opacity:0.85;">{{ $nv['vaitro'] }}</div>
@@ -172,7 +172,6 @@ function openUpdateModal() {
         data-email="{{ $nv['email'] }}"
         data-diachi="{{ $nv['diachi'] }}"
         data-vaitro="{{ $nv['vaitro'] }}"
-        data-role="{{ $nv['role'] ?? '' }}"
         data-image="{{ asset($nv['image']) }}">
         <i class="fa fa-pencil-square-o"></i>Sửa</a>
                 
@@ -207,7 +206,7 @@ function openUpdateModal() {
                             <td style="text-align:center;">{{ $i+1 }}</td>
                             <td style="text-align:center; font-weight:500;">{{ $nv['tennv'] }}</td>
                             <td style="text-align:center;">
-                                <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="{{ asset($nv['image']) }}">
+                                <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="admin{{ asset($nv['image']) }}">
                             </td>
                             <td style="text-align:center;">{{ $nv['sodt'] }}</td>
                             <td style="text-align:center;">{{ $nv['email'] }}</td>
@@ -251,7 +250,6 @@ function showUpdateModal(btn) {
     var email = btn.getAttribute('data-email');
     var diachi = btn.getAttribute('data-diachi');
     var vaitro = btn.getAttribute('data-vaitro');
-    var role = btn.getAttribute('data-role');
     var image = btn.getAttribute('data-image');
 
     // Fill vào form
@@ -260,7 +258,6 @@ function showUpdateModal(btn) {
     document.getElementById('update-email').value = email;
     document.getElementById('update-diachi').value = diachi;
     document.getElementById('update-vaitro').value = vaitro;
-    document.getElementById('update-role').value = role;
 
     // Ảnh preview
     var imgPreview = document.getElementById('update-image-preview');
