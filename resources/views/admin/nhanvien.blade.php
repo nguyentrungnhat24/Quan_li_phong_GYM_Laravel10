@@ -81,7 +81,7 @@
       <div class="nv-form-group">
         <label class="nv-form-label">Hình ảnh</label>
         <input type="file" name="image" class="nv-form-input">
-        <img id="update-image-preview" src="admin" style="width:60px; margin-top:8px; border-radius:8px; display:none;">
+        <img id="update-image-preview" src="" style="width:60px; margin-top:8px; border-radius:8px; display:none;">
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Số điện thoại</label>
@@ -150,7 +150,7 @@ function openUpdateModal() {
     <div class="d-flex flex-wrap" style="gap: 2.5rem; justify-content: flex-start;">
         @foreach($nhanviens as $nv)
             <div class="card" style="flex: 0 0 23%; max-width: 23%; min-width: 260px; min-height: 410px; box-shadow: 0 8px 18px rgba(0,0,0,0.25); margin-bottom: 2.5rem; border-radius: 18px; padding: 0; background: linear-gradient(160deg, #a8edea 0%, #005c97 100%); position:relative; display:flex; flex-direction:column; align-items:center;">
-                <img class="avatar" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: #fff;" src="admin{{ asset($nv['image']) }}">
+                <img class="avatar" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; border: 4px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: #fff;" src="{{ asset($nv['image']) }}">
                 <div style="flex:1; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                   <h3 class="text-center" style="font-size:1.85rem; font-weight:700; letter-spacing:1px; margin-top:10px; text-transform:uppercase; color:#0f2341;">{{ $nv['tennv'] }}</h3>
                   <div class="text-center mb-2" style="font-size:1.25rem; color:#222; opacity:0.85;">{{ $nv['vaitro'] }}</div>
@@ -206,7 +206,7 @@ function openUpdateModal() {
                             <td style="text-align:center;">{{ $i+1 }}</td>
                             <td style="text-align:center; font-weight:500;">{{ $nv['tennv'] }}</td>
                             <td style="text-align:center;">
-                                <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="admin{{ asset($nv['image']) }}">
+                                <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="{{ asset($nv['image']) }}">
                             </td>
                             <td style="text-align:center;">{{ $nv['sodt'] }}</td>
                             <td style="text-align:center;">{{ $nv['email'] }}</td>

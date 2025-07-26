@@ -4,21 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\NhanVien;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class NhanVienController extends Controller
 {
     public function addNhanVien(Request $request)
     {
         if ($request->has('themmoi')) {
-            $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'vaitro']);
-            if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('/uploaded', 'public');
-                $data['image'] = '/' . $path;
-            } else {
-                $data['image'] = 'uploaded/avatar.png'; // default image nếu không upload
+            // Validation
+            $validator = Validator::make($request->all(), NhanVien::$rules);
+            
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
-            NhanVien::create($data);
+            
+            // Sử dụng logic từ model
+            NhanVien::createNhanVien($request);
         }
         return redirect()->route('admin.nhanvien');
     }
@@ -26,12 +29,21 @@ class NhanVienController extends Controller
     public function updateNhanVien(Request $request, $id)
     {
         $nv = NhanVien::findOrFail($id);
-        $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'vaitro']);
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('/uploaded', 'public');
-            $data['image'] = '/../' . $path;
+        
+        // Validation (loại trừ email hiện tại)
+        $rules = NhanVien::$rules;
+        $rules['email'] = 'required|email|unique:tb_nhanvien,email,' . $id;
+        
+        $validator = Validator::make($request->all(), $rules);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
-        $nv->update($data);
+        
+        // Sử dụng logic từ model
+        $nv->updateNhanVien($request);
         return redirect()->route('admin.nhanvien');
     }
 
@@ -44,6 +56,13 @@ class NhanVienController extends Controller
     public function nhanVienList()
     {
         $nhanviens = NhanVien::all();
+        return view('admin.nhanvien', compact('nhanviens'));
+    }
+
+    // Thêm method để lọc theo vai trò
+    public function nhanVienByVaiTro($vaitro)
+    {
+        $nhanviens = NhanVien::byVaiTro($vaitro)->get();
         return view('admin.nhanvien', compact('nhanviens'));
     }
 }

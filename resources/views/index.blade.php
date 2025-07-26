@@ -21,15 +21,18 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- ======== StyleSheet ======= -->
     <link rel="stylesheet" href="{{ asset('/admin/css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('signin_signup/css/style.css') }}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Quản lý phòng GYM</title>
+    
   </head>
   <body>
-  <!-- <div id="id01" class="modal">
-
-  
-
-
-  </div> -->
+  <div id="id01" class="modal">
+    
+    <!-- Include form signin -->
+    @include('signin_signup.signin')
+    
+  </div>
 <script>
     function ktNhap(idTag, idMsg, msg) {
             var idTag = document.getElementById(idTag);

@@ -94,6 +94,50 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/bmi', function () { return view('admin.bmi'); })->name('bmi');
 });
 
+// Debug route để kiểm tra dữ liệu nhân viên
+Route::get('/debug/nhanvien', function() {
+    $nhanviens = \App\Models\NhanVien::all();
+    foreach($nhanviens as $nv) {
+        echo "ID: " . $nv->id . "<br>";
+        echo "Tên: " . $nv->tennv . "<br>";
+        echo "Image path: " . $nv->image . "<br>";
+        echo "Full URL: " . asset($nv->image) . "<br>";
+        echo "File exists: " . (file_exists(public_path($nv->image)) ? 'YES' : 'NO') . "<br>";
+        echo "<hr>";
+    }
+});
+
+// Route để sửa dữ liệu trong database
+Route::get('/fix/nhanvien-images', function() {
+    $nhanviens = \App\Models\NhanVien::all();
+    $fixed = 0;
+    
+    foreach($nhanviens as $nv) {
+        $oldPath = $nv->image;
+        
+        // Sửa đường dẫn từ admin/../uploaded/ thành /admin/uploaded/
+        if (strpos($oldPath, 'admin/../uploaded/') === 0) {
+            $newPath = '/admin/uploaded/' . basename($oldPath);
+            $nv->update(['image' => $newPath]);
+            echo "Fixed: {$oldPath} → {$newPath}<br>";
+            $fixed++;
+        }
+        // Sửa đường dẫn từ uploaded/ thành /admin/uploaded/
+        elseif (strpos($oldPath, 'uploaded/') === 0) {
+            $newPath = '/admin/uploaded/' . basename($oldPath);
+            $nv->update(['image' => $newPath]);
+            echo "Fixed: {$oldPath} → {$newPath}<br>";
+            $fixed++;
+        }
+    }
+    
+    echo "<br>Total fixed: {$fixed} records";
+});
+
 Route::get('/test', function () {
     return 'Test OK';
 });
+
+
+
+Route::post('/signin', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('check_login');

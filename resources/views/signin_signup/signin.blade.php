@@ -1,20 +1,3 @@
-
-
-
-
-<!doctype html>
-<html lang="en">
-<head>
-    <title>Đăng nhập</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Font & CSS -->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- <link rel="stylesheet" href="{{asset('signin_signup/css/style.css')}}"> -->
-    <link rel="stylesheet" href="http://localhost:8000/signin_signup/css/style.css">
-</head>
-<body>
 <section class="ftco-section">
     <div class="container">
         <div class="row justify-content-center">
@@ -45,7 +28,7 @@
                                 </p>
                             </div>
                         </div>
-                        <form action="{{ route('check_signin') }}" class="signin-form" method="POST">
+                        <form action="{{ route('check_login') }}" class="signin-form" method="POST">
                             @csrf
                             <div class="form-group mb-3">
                                 <label class="label" for="name">Tài khoản</label>

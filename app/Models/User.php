@@ -11,23 +11,40 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    protected $table = 'user';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
+    protected $fillable = [
+        'user', 
+        'password', 
+        'namee', 
+        'image', 
+        'addresss', 
+        'phone_number', 
+        'email', 
+        'role'
+    ];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
+
+     // Nếu bạn muốn Laravel dùng cột 'user' để đăng nhập
+    public function getAuthIdentifierName()
+    {
+        return 'user';
+    }
+
+    
     protected $hidden = [
         'password',
         'remember_token',
