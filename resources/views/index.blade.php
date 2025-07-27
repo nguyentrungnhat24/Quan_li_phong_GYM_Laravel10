@@ -22,6 +22,7 @@
     <!-- ======== StyleSheet ======= -->
     <link rel="stylesheet" href="{{ asset('/admin/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('signin_signup/css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('signin_signup/css/modal.css') }}" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Quản lý phòng GYM</title>
     
@@ -33,6 +34,13 @@
     @include('signin_signup.signin')
     
   </div>
+  <div id="id02" class="modal">
+    
+    <!-- Include form signup -->
+    @include('signin_signup.signup')
+    
+  </div>
+  
 <script>
     function ktNhap(idTag, idMsg, msg) {
             var idTag = document.getElementById(idTag);
@@ -47,6 +55,18 @@
                 return true;
             }
         }
+
+</script>
+
+@if($errors->any())
+<script>
+    // Tự động hiển thị modal đăng nhập khi có lỗi
+    document.addEventListener('DOMContentLoaded', function() {
+        // Nếu có lỗi, hiển thị modal đăng nhập
+        document.getElementById('id01').style.display = 'block';
+    });
+</script>
+@endif
 </script>
     <header class="header" id="header">
       <!-- Navigation -->
@@ -69,7 +89,10 @@
             </li>
           </ul>
 
-          <button class="btn sign-up bg-info" style="width:auto;" onclick="document.getElementById('id01').style.display='block'">Đăng nhập</button>
+          <div class="auth-buttons d-flex" style="gap: 10px;">
+            <button class="btn sign-up bg-primary" style="width:auto;" onclick="document.getElementById('id01').style.display='block'">Đăng nhập</button>
+            <button class="btn sign-up bg-success" style="width:auto;" onclick="document.getElementById('id02').style.display='block'">Đăng kí</button>
+          </div>
           <div class="hamburger">
             <i class="bx bx-menu-alt-left"></i>
           </div>

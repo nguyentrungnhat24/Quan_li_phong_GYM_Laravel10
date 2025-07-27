@@ -44,6 +44,17 @@ class User extends Authenticatable
         return 'user';
     }
 
+    // Mutator để hash password khi lưu vào database
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
+    // Accessor để lấy password field cho authentication
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
     
     protected $hidden = [
         'password',

@@ -13,7 +13,7 @@
                         <div class="text w-100">
                             <h2>Chào mừng bạn đến với đăng nhập</h2>
                             <p>Bạn đã có tài khoản chưa?</p>
-                            <a href="{{ url('signin_signup/signup') }}" class="btn btn-white btn-outline-white">Đăng kí</a>
+                            <a href="#" onclick="document.getElementById('id02').style.display='block'; document.getElementById('id01').style.display='none'" class="btn btn-white btn-outline-white">Đăng kí</a>
                         </div>
                     </div>
                     <div class="login-wrap p-4 p-lg-5">

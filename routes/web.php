@@ -31,8 +31,12 @@ Route::get('admin/app', function () {
     
 // Login routes
 Route::get('/signin', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('signin');
-Route::post('/signin', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('check_signin');
+Route::post('/signin', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('check_login');
 
+    
+// Register routes
+Route::get('/signup', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('signup');
+Route::post('/signup', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register');
 
 
 // Admin routes
@@ -137,7 +141,3 @@ Route::get('/fix/nhanvien-images', function() {
 Route::get('/test', function () {
     return 'Test OK';
 });
-
-
-
-Route::post('/signin', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('check_login');

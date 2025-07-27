@@ -22,6 +22,7 @@ class LoginController extends Controller
             'username.required' => 'Yêu cầu nhập tài khoản',
             'password.required' => 'Yêu cầu nhập mật khẩu',
         ]);
+
         if (Auth::attempt(['user' => $request->username, 'password' => $request->password])) {
             $request->session()->regenerate();
 
@@ -31,9 +32,8 @@ class LoginController extends Controller
             // Lưu thông tin vào session
             session([
                 'user_id' => $user->id,
-                'username' => $user->user, // hoặc $user->username tùy cột
+                'username' => $user->user,
                 'role' => $user->role,
-                // Thêm các thông tin khác nếu muốn
             ]);
 
             // Kiểm tra role và redirect
@@ -43,24 +43,15 @@ class LoginController extends Controller
                 return redirect()->route('user.dashboard');
             } else {
                 Auth::logout();
-                return back()->withErrors(['username' => 'Tài khoản không hợp lệ!']);
+                return back()->withErrors(['username' => 'Tài khoản không hợp lệ!'])->withInput();
             }
-        }else {
-            dd('Auth failed');
         }
 
-        dd(Auth::where('user', $request->username)->first());
-
+        // Nếu đăng nhập thất bại, trả về lỗi
         return back()->withErrors([
             'username' => 'Tài khoản hoặc mật khẩu không đúng.',
         ])->withInput();
     }
 
-    public function check_signin(Request $request)
-    {
-        $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required'],
-        ]);
-    }
+    
 }
