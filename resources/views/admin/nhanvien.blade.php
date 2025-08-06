@@ -173,7 +173,7 @@ function openUpdateModal() {
         data-diachi="{{ $nv['diachi'] }}"
         data-vaitro="{{ $nv['vaitro'] }}"
         data-image="{{ asset($nv['image']) }}">
-        <i class="fa fa-pencil-square-o"></i>Sửa</a>
+        <i class="fas fa-edit"></i></a>
                 
               </div>
         @endforeach
@@ -214,6 +214,14 @@ function openUpdateModal() {
                             <td style="text-align:center;">{{ $nv['vaitro'] }}</td>
                             <td style="text-align:center;">
                                 <a class="btn"
+                                   style="background:#ffc107 ; color:#fff;
+                                   font-size:1.3rem;
+                                   border-radius:50%; 
+                                   padding:10px 14px; 
+                                   box-shadow:0 2px 6px #bbb; 
+                                   display:inline-flex; 
+                                   align-items:center; 
+                                   justify-content:center;"
                                    href="javascript:void(0);"
                                    onclick="showUpdateModal(this)"
                                    data-id="{{ $nv['id'] }}"
@@ -224,7 +232,7 @@ function openUpdateModal() {
                                    data-vaitro="{{ $nv['vaitro'] }}"
                                    data-role="{{ $nv['role'] ?? '' }}"
                                    data-image="{{ asset($nv['image']) }}">
-                                    <i class="fa fa-pencil-square-o"></i>
+                                   <i class="fas fa-edit"></i>
                                 </a>
                             </td>
                             <td style="text-align:center;">

@@ -69,4 +69,39 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Lấy tất cả user
+    public static function getAllUsers() {
+        return self::all();
+    }
+
+    // Tạo user mới, xử lý upload ảnh nếu có
+    public static function createUser($data) {
+        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
+            $path = $data['image']->store('admin/uploaded', 'public');
+            $data['image'] = 'storage/' . $path;
+        }
+        return self::create($data);
+    }
+
+    // Cập nhật user
+    public static function updateUser($id, $data) {
+        $user = self::findOrFail($id);
+        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
+            $path = $data['image']->store('admin/uploaded', 'public');
+            $data['image'] = 'storage/' . $path;
+        }
+        $user->update($data);
+        return $user;
+    }
+
+    // Xóa user
+    public static function deleteUser($id) {
+        return self::destroy($id);
+    }
+
+    // Lấy user theo id
+    public static function getUserById($id) {
+        return self::findOrFail($id);
+    }
 }

@@ -3,43 +3,40 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\KhachHang;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class KhachHangController extends Controller
 {
     public function khachHangList() {
-        $dskh = KhachHang::all();
+        $dskh = User::getAllUsers();
         return view('admin.khachhang', compact('dskh'));
     }
     public function addKhachHang(Request $request) {
         if ($request->has('themmoikh')) {
             $data = $request->all();
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('admin/uploaded', 'public');
-                $data['image'] = 'storage/' . $path;
+                $data['image'] = $request->file('image');
             }
-            KhachHang::create($data);
+            User::createUser($data);
         }
         return redirect()->route('admin.khachhang');
     }
     public function deleteKhachHang($id) {
-        KhachHang::destroy($id);
+        User::deleteUser($id);
         return redirect()->route('admin.khachhang');
     }
     public function editKhachHang($id) {
-        $khct = KhachHang::findOrFail($id);
-        $dskh = KhachHang::all();
+        $khct = User::getUserById($id);
+        $dskh = User::getAllUsers();
         return view('admin.updatekh', compact('khct', 'dskh'));
     }
     public function updateKhachHang(Request $request, $id) {
-        $kh = KhachHang::findOrFail($id);
         $data = $request->all();
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('admin/uploaded', 'public');
-            $data['image'] = 'storage/' . $path;
+            $data['image'] = $request->file('image');
         }
-        $kh->update($data);
+        User::updateUser($id, $data);
         return redirect()->route('admin.khachhang');
     }
 }
