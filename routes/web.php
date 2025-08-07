@@ -65,6 +65,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/pt/edit/{id}', [PTController::class, 'editPT'])->name('pt.edit');
     Route::post('/pt/update/{id}', [PTController::class, 'updatePT'])->name('pt.update');
     Route::get('/pt/delete/{id}', [PTController::class, 'deletePT'])->name('pt.delete');
+    Route::get('/pt/export', [PTController::class, 'exportPT'])->name('pt.export');
 
     // GoiTap routes
     Route::get('/goitap', [GoiTapController::class, 'goiTapList'])->name('goitap');

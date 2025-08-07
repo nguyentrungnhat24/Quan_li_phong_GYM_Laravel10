@@ -37,7 +37,7 @@ class LoginController extends Controller
             ]);
 
             // Kiểm tra role và redirect
-            if ($user->role == 2) {
+            if ($user->role == 0) {
                 return redirect()->route('admin.trangchu');
             } elseif ($user->role == 1) {
                 return redirect()->route('user.dashboard');

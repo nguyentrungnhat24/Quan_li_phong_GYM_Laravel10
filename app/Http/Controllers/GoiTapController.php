@@ -7,30 +7,28 @@ use App\Models\GoiTap;
 
 class GoiTapController extends Controller
 {
-    public function goiTapList() {
-        $dsgt = GoiTap::all();
-        return view('admin.goitap', compact('dsgt'));
+    public function index() {
+        $dsgoitap = GoiTap::getAllGoiTap();
+        return view('admin.goitap', compact('dsgoitap'));
     }
-    public function addGoiTap(Request $request) {
-        if ($request->has('themmoi')) {
+
+    public function store(Request $request) {
+        if ($request->has('themmoigoitap')) {
             $data = $request->all();
-            GoiTap::create($data);
+            GoiTap::createGoiTap($data);
         }
         return redirect()->route('admin.goitap');
     }
-    public function deleteGoiTap($id) {
-        GoiTap::destroy($id);
+
+    public function destroy($id) {
+        GoiTap::deleteGoiTap($id);
         return redirect()->route('admin.goitap');
     }
-    public function editGoiTap($id) {
-        $gtct = GoiTap::findOrFail($id);
-        $dsgt = GoiTap::all();
-        return view('admin.update_goitap', compact('gtct', 'dsgt'));
-    }
-    public function updateGoiTap(Request $request, $id) {
-        $gt = GoiTap::findOrFail($id);
+
+
+    public function update(Request $request, $id) {
         $data = $request->all();
-        $gt->update($data);
+        GoiTap::updateGoiTapById($id, $data);
         return redirect()->route('admin.goitap');
     }
 }
