@@ -23,7 +23,7 @@ class LoginController extends Controller
             'password.required' => 'Yêu cầu nhập mật khẩu',
         ]);
 
-        if (Auth::attempt(['user' => $request->username, 'password' => $request->password])) {
+        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $request->session()->regenerate();
 
             // Lấy user vừa đăng nhập
@@ -32,15 +32,15 @@ class LoginController extends Controller
             // Lưu thông tin vào session
             session([
                 'user_id' => $user->id,
-                'username' => $user->user,
-                'role' => $user->role,
+                'username' => $user->username,
+                'role_id' => $user->role_id,
             ]);
 
             // Kiểm tra role và redirect
-            if ($user->role == 0) {
+            if ($user->role_id == 1) {
                 return redirect()->route('admin.trangchu');
-            } elseif ($user->role == 1) {
-                return redirect()->route('user.dashboard');
+            } elseif ($user->role_id == 2) {
+                return redirect()->route('user.home');
             } else {
                 Auth::logout();
                 return back()->withErrors(['username' => 'Tài khoản không hợp lệ!'])->withInput();

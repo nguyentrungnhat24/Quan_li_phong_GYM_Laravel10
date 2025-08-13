@@ -3,25 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class NhanVien extends Model
 {
-    protected $table = 'tb_nhanvien';
+    protected $table = 'users';
     protected $fillable = [
-        'tennv', 'image', 'sodt', 'email', 'diachi', 'vaitro'
+        'username', 'password_hash', 'full_name', 'image_path', 'address', 'phone_number', 'email', 'role_id', 'deleted'
     ];
     public $timestamps = false;
 
-    // Validation rules
-    public static $rules = [
-        'tennv' => 'required|string|max:255',
-        'sodt' => 'required|string|max:20',
-        'email' => 'required|email|unique:tb_nhanvien,email',
-        'diachi' => 'required|string|max:500',
-        'vaitro' => 'required|string|max:100',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-    ];
+    // Scope lấy danh sách nhân viên (role_id = 2)
+    public function scopeNhanVien($query)
+    {
+        return $query->where('role_id', 2);
+    }
 
     // Xử lý upload ảnh
     public static function handleImageUpload($request)
@@ -40,7 +35,7 @@ class NhanVien extends Model
             $file->move($uploadPath, $originalName);
             return '/admin/uploaded/' . $originalName;
         }
-        return 'admin/uploaded/avatar.png'; // default image
+        return 'admin/uploaded/avatar.png';
     }
 
     // Xử lý upload ảnh cho update (giữ tên gốc, cho phép ghi đè)
@@ -68,6 +63,7 @@ class NhanVien extends Model
     {
         $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'vaitro']);
         $data['image'] = self::handleImageUpload($request);
+        $data = self::translateFromLegacy($data);
         
         return self::create($data);
     }
@@ -75,14 +71,15 @@ class NhanVien extends Model
     // Cập nhật nhân viên với logic business
     public function updateNhanVien($request)
     {
-        $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'vaitro']);
-        
-        // Xử lý upload ảnh mới
+        $data = $request->only(['tennv', 'sodt', 'email', 'diachi']);
         $newImagePath = $this->handleImageUploadForUpdate($request);
         if ($newImagePath) {
-            $data['image'] = $newImagePath;
+            $data['image_path'] = $newImagePath;
         }
-        
+        $data['full_name'] = $data['tennv'];
+        $data['phone_number'] = $data['sodt'];
+        $data['address'] = $data['diachi'];
+        unset($data['tennv'], $data['sodt'], $data['diachi']);
         return $this->update($data);
     }
 
@@ -95,7 +92,7 @@ class NhanVien extends Model
     // Accessor để format số điện thoại
     public function getFormattedPhoneAttribute()
     {
-        return preg_replace('/(\d{4})(\d{3})(\d{3})/', '$1 $2 $3', $this->sodt);
+        return preg_replace('/(\d{4})(\d{3})(\d{3})/', '$1 $2 $3', $this->phone_number);
     }
 
     // Mutator để format email
@@ -103,4 +100,33 @@ class NhanVien extends Model
     {
         $this->attributes['email'] = strtolower(trim($value));
     }
+
+    // ===== Legacy accessors to keep blades working =====
+    public function getTennvAttribute() { return $this->attributes['full_name'] ?? null; }
+    public function getImageAttribute() { return $this->attributes['image_path'] ?? null; }
+    public function getSodtAttribute() { return $this->attributes['phone_number'] ?? null; }
+    public function getDiachiAttribute() { return $this->attributes['address'] ?? null; }
+    
+
+    protected static function translateFromLegacy(array $data): array
+    {
+        $mapped = $data;
+        if (isset($data['tennv'])) $mapped['full_name'] = $data['tennv'];
+        if (isset($data['sodt'])) $mapped['phone_number'] = $data['sodt'];
+        if (isset($data['diachi'])) $mapped['address'] = $data['diachi'];
+
+        if (isset($data['image'])) $mapped['image_path'] = $data['image'];
+        return $mapped;
+    }
+
+    // Quy tắc validate dùng cho controller
+    public static $rules = [
+        'tennv'   => 'required|string|max:100',
+        'sodt'    => 'required|digits_between:9,11',
+        'email'   => 'required|email|max:100|unique:users,email',
+        'diachi'  => 'required|string|max:255',
+        'image'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ];
 }
+
+$nhanViens = NhanVien::nhanVien()->get();

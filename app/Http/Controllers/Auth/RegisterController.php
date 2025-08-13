@@ -20,12 +20,12 @@ class RegisterController extends Controller
         // Validate dữ liệu
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:user,user',
+            'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6',
             'repassword' => 'required|same:password',
             'address' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
-            'email' => 'required|email|max:255|unique:user,email',
+            'email' => 'required|email|max:255|unique:users,email',
         ], [
             'name.required' => 'Yêu cầu nhập họ và tên',
             'username.required' => 'Yêu cầu nhập tài khoản',
@@ -44,13 +44,13 @@ class RegisterController extends Controller
         try {
             // Tạo user mới
             $user = new User();
-            $user->user = $request->username;
+            $user->username = $request->username;
             $user->password = $request->password; // Sẽ được hash tự động bởi mutator
-            $user->namee = $request->name;
-            $user->addresss = $request->address;
+            $user->full_name = $request->name;
+            $user->address = $request->address;
             $user->phone_number = $request->phone_number;
             $user->email = $request->email;
-            $user->role = 1; // Role mặc định cho user thường
+            $user->role_id = 3; // Role mặc định cho customer
             $user->save();
 
         

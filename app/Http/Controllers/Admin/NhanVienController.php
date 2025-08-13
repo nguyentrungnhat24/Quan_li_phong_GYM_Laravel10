@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\NhanVien;
 use Illuminate\Support\Facades\Validator;
@@ -29,19 +30,22 @@ class NhanVienController extends Controller
     public function updateNhanVien(Request $request, $id)
     {
         $nv = NhanVien::findOrFail($id);
-        
-        // Validation (loại trừ email hiện tại)
+
+        // Validation (loại trừ email hiện tại, dùng bảng users)
         $rules = NhanVien::$rules;
-        $rules['email'] = 'required|email|unique:tb_nhanvien,email,' . $id;
-        
+    
+        $rules['email'] = 'required|email|max:100|unique:users,email,' . $id;
         $validator = Validator::make($request->all(), $rules);
-        
+
+        // Debug dữ liệu gửi lên
+        // dd($request->all(), $validator->errors());
+
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-        
+
         // Sử dụng logic từ model
         $nv->updateNhanVien($request);
         return redirect()->route('admin.nhanvien');
@@ -55,7 +59,7 @@ class NhanVienController extends Controller
 
     public function nhanVienList()
     {
-        $nhanviens = NhanVien::all();
+        $nhanviens = NhanVien::nhanvien()->get();
         return view('admin.nhanvien', compact('nhanviens'));
     }
 

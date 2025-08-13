@@ -6,9 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class DanhMucDungCu extends Model
 {
-    protected $table = 'tb_danhmucdungcu';
+    protected $table = 'equipment_categories';
     protected $fillable = [
-        'tendmdc'
+        'category_name',
+        'deleted',
     ];
     public $timestamps = false;
+
+    // Legacy accessors/mutators for existing blades
+    public function getTendmdcAttribute()
+    {
+        return $this->attributes['category_name'] ?? null;
+    }
+
+    public function setTendmdcAttribute($value)
+    {
+        $this->attributes['category_name'] = $value;
+    }
 }

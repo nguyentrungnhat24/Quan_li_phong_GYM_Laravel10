@@ -11,18 +11,19 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    protected $table = 'user';
+    protected $table = 'users';
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
-        'user', 
-        'password', 
-        'namee', 
-        'image', 
-        'addresss', 
-        'phone_number', 
-        'email', 
-        'role'
+        'username',
+        'password_hash',
+        'full_name',
+        'image_path',
+        'address',
+        'phone_number',
+        'email',
+        'role_id',
+        'deleted',
     ];
 
     /**
@@ -41,19 +42,19 @@ class User extends Authenticatable
      // Nếu bạn muốn Laravel dùng cột 'user' để đăng nhập
     public function getAuthIdentifierName()
     {
-        return 'user';
+        return 'username';
     }
 
     // Mutator để hash password khi lưu vào database
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = bcrypt($value);
+        $this->attributes['password_hash'] = bcrypt($value);
     }
 
     // Accessor để lấy password field cho authentication
     public function getAuthPassword()
     {
-        return $this->password;
+        return $this->password_hash;
     }
     
     protected $hidden = [
@@ -71,16 +72,20 @@ class User extends Authenticatable
     ];
 
     // Lấy tất cả user
-    public static function getAllUsers() {
-        return self::all();
+    public static function getAllUsers($field = null, $value = null) { 
+        if ($field && $value !== null) {
+            return self::where($field, $value)->get();
+        }
+        return self::all(); 
     }
 
     // Tạo user mới, xử lý upload ảnh nếu có
     public static function createUser($data) {
         if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
             $path = $data['image']->store('admin/uploaded', 'public');
-            $data['image'] = 'storage/' . $path;
+            $data['image_path'] = 'storage/' . $path;
         }
+        $data = self::translateFromLegacy($data);
         return self::create($data);
     }
 
@@ -89,8 +94,9 @@ class User extends Authenticatable
         $user = self::findOrFail($id);
         if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
             $path = $data['image']->store('admin/uploaded', 'public');
-            $data['image'] = 'storage/' . $path;
+            $data['image_path'] = 'storage/' . $path;
         }
+        $data = self::translateFromLegacy($data);
         $user->update($data);
         return $user;
     }
@@ -103,5 +109,24 @@ class User extends Authenticatable
     // Lấy user theo id
     public static function getUserById($id) {
         return self::findOrFail($id);
+    }
+
+    // ===== Legacy accessors to keep blades working (if any reference old names) =====
+    public function getUserAttribute() { return $this->attributes['username'] ?? null; }
+    public function getNameeAttribute() { return $this->attributes['full_name'] ?? null; }
+    public function getImageAttribute() { return $this->attributes['image_path'] ?? null; }
+    public function getAddresssAttribute() { return $this->attributes['address'] ?? null; }
+    public function getRoleAttribute() { return $this->attributes['role_id'] ?? null; }
+
+    protected static function translateFromLegacy(array $data): array
+    {
+        $mapped = $data;
+        if (isset($data['user'])) $mapped['username'] = $data['user'];
+        if (isset($data['namee'])) $mapped['full_name'] = $data['namee'];
+        if (isset($data['image'])) $mapped['image_path'] = $data['image'];
+        if (isset($data['addresss'])) $mapped['address'] = $data['addresss'];
+        if (isset($data['role'])) $mapped['role_id'] = $data['role'];
+        if (isset($data['password'])) $mapped['password_hash'] = bcrypt($data['password']);
+        return $mapped;
     }
 }

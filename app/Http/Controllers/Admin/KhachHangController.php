@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+
 
 class KhachHangController extends Controller
 {
     public function khachHangList() {
-        $dskh = User::getAllUsers();
+        $dskh = User::getAllUsers('role_id', 3);
         return view('admin.khachhang', compact('dskh'));
     }
     public function addKhachHang(Request $request) {

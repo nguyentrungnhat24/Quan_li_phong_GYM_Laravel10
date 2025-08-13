@@ -101,3 +101,112 @@ body {
     width: 150px;
     height: 150px;
 }
+
+/* ===== Improved Custom Header/Navbar Styles ===== */
+#ftco-navbar {
+    background: linear-gradient(90deg, #232526 0%, #434343 100%);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    padding: 1rem 0 1rem 0;
+    
+    transition: background 0.3s, box-shadow 0.3s;
+}
+#ftco-navbar .navbar-brand {
+    display: flex;
+    align-items: center;
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: #fff;
+    letter-spacing: 2.5px;
+    gap: 14px;
+    margin-right: 15%;
+}
+#ftco-navbar .navbar-brand .logo {
+    height: 54px;
+    width: 54px;
+    margin-right: 8px;
+    border-radius: 50%;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    object-fit: cover;
+    background: #fff;
+    border: 2px solid #f23a2e;
+}
+#ftco-navbar .navbar-brand span {
+    margin-left: 6px;
+    font-weight: 900;
+    color: #fff;
+}
+#ftco-navbar .navbar-nav {
+    gap: 8px;
+}
+#ftco-navbar .navbar-nav .nav-link {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.08rem;
+    
+    border-radius: 12px;
+    margin-right: 10px;
+    transition: background 0.25s, color 0.25s, box-shadow 0.2s;
+}
+#ftco-navbar .navbar-nav .nav-link:hover, #ftco-navbar .navbar-nav .active > .nav-link, #ftco-navbar .navbar-nav .nav-item.active .nav-link {
+    background: linear-gradient(90deg, #f23a2e 0%, #f89d13 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(242,58,46,0.10);
+}
+#ftco-navbar .navbar-nav .badge {
+    background: #f89d13;
+    color: #fff;
+    font-size: 0.8rem;
+    margin-left: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+#ftco-navbar .dropdown-menu {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    border: none;
+    margin-top: 0.5rem;
+    min-width: 180px;
+}
+#ftco-navbar .dropdown-item {
+    font-size: 1rem;
+    color: #232526;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+#ftco-navbar .dropdown-item:hover {
+    background: #f23a2e;
+    color: #fff;
+}
+@media (max-width: 991.98px) {
+    #ftco-navbar .navbar-nav {
+        gap: 0;
+    }
+    #ftco-navbar .navbar-nav .nav-link {
+        padding: 0.7rem 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+    #ftco-navbar .navbar-brand .logo {
+        height: 36px;
+        width: 36px;
+        margin-right: 6px;
+    }
+    #ftco-navbar .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* Layout: brand left, menu right; keep items on one line */
+#ftco-navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#ftco-navbar .navbar-nav {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#ftco-navbar .navbar-nav .nav-link {
+    white-space: nowrap;
+}

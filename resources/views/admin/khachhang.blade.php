@@ -9,8 +9,8 @@
       <h3 class="mb-4 nv-form-modal-title">Thông tin khách hàng</h3>
       <div class="nv-form-group">
         <label class="nv-form-label">Tên khách hàng</label>
-        <input type="text" name="namee" value="{{ old('namee') }}" required class="nv-form-input">
-        @error('namee')<div class="text-danger">{{ $message }}</div>@enderror
+        <input type="text" name="full_name" value="{{ old('full_name') }}" required class="nv-form-input">
+        @error('full_name')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Hình ảnh</label>
@@ -30,8 +30,8 @@
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Địa chỉ</label>
-        <input type="text" name="addresss" value="{{ old('addresss') }}" required class="nv-form-input">
-        @error('addresss')<div class="text-danger">{{ $message }}</div>@enderror
+        <input type="text" name="address" value="{{ old('address') }}" required class="nv-form-input">
+        @error('address')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <input type="submit" name="themmoikh" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Đăng ký" onclick="return ktEmail('txtEmail','msgEmail','Sai định dạng Email !')">
       @if(session('success'))
@@ -59,7 +59,7 @@
       <h3 class="mb-4 nv-form-modal-title">Cập nhật khách hàng</h3>
       <div class="nv-form-group">
         <label class="nv-form-label">Tên khách hàng</label>
-        <input type="text" name="namee" id="update-namee" required class="nv-form-input">
+        <input type="text" name="full_name" id="update-namee" required class="nv-form-input">
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Hình ảnh</label>
@@ -76,7 +76,7 @@
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Địa chỉ</label>
-        <input type="text" name="addresss" id="update-addresss" required class="nv-form-input">
+        <input type="text" name="address" id="update-addresss" required class="nv-form-input">
       </div>
 
       <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Cập nhật">
@@ -108,16 +108,16 @@
                 </thead>
                 <tbody>
                     @foreach($dskh as $i => $kh)
-                        @if($kh['role'] == 1)
+                        @if(($kh['role_id'] ?? $kh['role'] ?? null) == 3)
                         <tr style="height:72px; vertical-align:middle;">
                             <td style="text-align:center;">{{ $i+1 }}</td>
-                            <td style="text-align:center; font-weight:500;">{{ $kh['namee'] }}</td>
+                            <td style="text-align:center; font-weight:500;">{{ $kh['full_name'] ?? $kh['namee'] }}</td>
                             <td style="text-align:center;">
-                                <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="{{ asset($kh['image']) }}">
+                                <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="{{ asset($kh['image_path'] ?? $kh['image']) }}">
                             </td>
                             <td style="text-align:center;">{{ $kh['phone_number'] }}</td>
                             <td style="text-align:center;">{{ $kh['email'] }}</td>
-                            <td style="text-align:center;">{{ $kh['addresss'] }}</td>
+                            <td style="text-align:center;">{{ $kh['address'] ?? $kh['addresss'] }}</td>
                           
                             <td style="text-align:center;">
                                 <a class="btn" style="background:#ffc107 ; 
@@ -128,11 +128,11 @@
                                 href="javascript:void(0);" 
                                 onclick="showUpdateModal(this)" 
                                 data-id="{{ $kh['id'] }}"
-                                data-namee="{{ $kh['namee'] }}" 
+                                data-namee="{{ $kh['full_name'] ?? $kh['namee'] }}" 
                                 data-phone_number="{{ $kh['phone_number'] }}" 
                                 data-email="{{ $kh['email'] }}" 
-                                data-addresss="{{ $kh['addresss'] }}" 
-                                data-image="{{ asset($kh['image']) }}">
+                                data-addresss="{{ $kh['address'] ?? $kh['addresss'] }}" 
+                                data-image="{{ asset($kh['image_path'] ?? $kh['image']) }}">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>

@@ -8,9 +8,16 @@ use Illuminate\Support\Facades\Storage;
 
 class PT extends Model
 {
-    protected $table = 'tb_pt';
+    protected $table = 'trainers';
     protected $fillable = [
-        'tenpt', 'image', 'sodt', 'email', 'vaitro', 'quandiem'
+        'training_category_id',
+        'full_name',
+        'image_path',
+        'phone_number',
+        'email',
+        'position',
+        'philosophy',
+        'deleted',
     ];
     public $timestamps = false;
 
@@ -27,11 +34,11 @@ class PT extends Model
      */
     public static function createPT(Request $request)
     {
-        $data = $request->all();
+        $data = self::translateFromLegacy($request->all());
         
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('admin/uploaded', 'public');
-            $data['image'] = 'storage/' . $path;
+            $data['image_path'] = 'storage/' . $path;
         }
         
         return self::create($data);
@@ -59,11 +66,11 @@ class PT extends Model
     public static function updatePTById(Request $request, $id)
     {
         $pt = self::findOrFail($id);
-        $data = $request->all();
+        $data = self::translateFromLegacy($request->all());
         
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('admin/uploaded', 'public');
-            $data['image'] = 'storage/' . $path;
+            $data['image_path'] = 'storage/' . $path;
         }
         
         return $pt->update($data);
@@ -104,12 +111,12 @@ class PT extends Model
             foreach ($pts as $pt) {
                 fputcsv($file, [
                     $pt->id,
-                    $pt->tenpt,
-                    $pt->sodt,
+                    $pt->full_name,
+                    $pt->phone_number,
                     $pt->email,
-                    $pt->vaitro,
-                    $pt->quandiem,
-                    $pt->image
+                    $pt->position,
+                    $pt->philosophy,
+                    $pt->image_path
                 ]);
             }
             
@@ -117,5 +124,23 @@ class PT extends Model
         };
         
         return response()->stream($callback, 200, $headers);
+    }
+
+    // ===== Legacy accessors to keep blades working =====
+    public function getTenptAttribute() { return $this->attributes['full_name'] ?? null; }
+    public function getImageAttribute() { return $this->attributes['image_path'] ?? null; }
+    public function getSodtAttribute() { return $this->attributes['phone_number'] ?? null; }
+    public function getVaitroAttribute() { return $this->attributes['position'] ?? null; }
+    public function getQuandiemAttribute() { return $this->attributes['philosophy'] ?? null; }
+
+    protected static function translateFromLegacy(array $data): array
+    {
+        $mapped = $data;
+        if (isset($data['tenpt'])) $mapped['full_name'] = $data['tenpt'];
+        if (isset($data['sodt'])) $mapped['phone_number'] = $data['sodt'];
+        if (isset($data['vaitro'])) $mapped['position'] = $data['vaitro'];
+        if (isset($data['quandiem'])) $mapped['philosophy'] = $data['quandiem'];
+        if (isset($data['image'])) $mapped['image_path'] = $data['image'];
+        return $mapped;
     }
 }

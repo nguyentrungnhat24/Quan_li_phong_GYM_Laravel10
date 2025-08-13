@@ -1,14 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NhanVienController;
-use App\Http\Controllers\KhachHangController;
-use App\Http\Controllers\PTController;
-use App\Http\Controllers\GoiTapController;
-use App\Http\Controllers\LichTapController;
-use App\Http\Controllers\DungCuController;
-use App\Http\Controllers\DanhMucDungCuController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\NhanVienController;
+use App\Http\Controllers\Admin\PTController;
+use App\Http\Controllers\Admin\GoiTapController;
+use App\Http\Controllers\Admin\LichTapController;
+use App\Http\Controllers\Admin\DungCuController;
+use App\Http\Controllers\Admin\DanhMucDungCuController;
+use App\Http\Controllers\Admin\KhachHangController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\ClassController;
+use App\Http\Controllers\User\ScheduleController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\TrainerController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +31,16 @@ Route::get('/', function () {
     return view('index');
 });
 
+// Các route cơ bản cho user (không cần prefix)
+Route::get('/home', [UserController::class, 'home'])->name('home');
+Route::get('/classes', [ClassController::class, 'index'])->name('classes');
+Route::get('/class/{id}', [ClassController::class, 'show'])->name('class.detail');
+Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+Route::get('/contact', [UserController::class, 'contact'])->name('contact');
+Route::get('/trainer', [TrainerController::class, 'index'])->name('trainer');
+Route::get('/service', [UserController::class, 'service'])->name('service');
+Route::get('/bmi', [UserController::class, 'bmi'])->name('bmi');
+
 Route::get('admin/app', function () {
     return view('admin.layouts.app');
 });
@@ -38,6 +55,9 @@ Route::post('/signin', [App\Http\Controllers\Auth\LoginController::class, 'login
 Route::get('/signup', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('signup');
 Route::post('/signup', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register');
 
+// Logout route
+Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
 
 // Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -49,7 +69,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/nhanvien', [NhanVienController::class, 'nhanVienList'])->name('nhanvien');
     Route::post('/nhanvien/add', [NhanVienController::class, 'addNhanVien'])->name('nhanvien.add');
     Route::get('/nhanvien/edit/{id}', [NhanVienController::class, 'editNhanVien'])->name('nhanvien.edit');
-    Route::post('/nhanvien/update/{id}', [NhanVienController::class, 'updateNhanVien'])->name('nhanvien.update');
+    Route::put('/nhanvien/update/{id}', [NhanVienController::class, 'updateNhanVien'])->name('nhanvien.update');
     Route::get('/nhanvien/delete/{id}', [NhanVienController::class, 'deleteNhanVien'])->name('nhanvien.delete');
 
     // KhachHang routes
@@ -73,6 +93,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/goitap/edit/{id}', [GoiTapController::class, 'editGoiTap'])->name('goitap.edit');
     Route::post('/goitap/update/{id}', [GoiTapController::class, 'updateGoiTap'])->name('goitap.update');
     Route::get('/goitap/delete/{id}', [GoiTapController::class, 'deleteGoiTap'])->name('goitap.delete');
+    Route::get('/goitap/toggle/{id}', [GoiTapController::class, 'toggleState'])->name('goitap.toggle');
 
     // LichTap routes
     Route::get('/lichtap', [LichTapController::class, 'lichTapList'])->name('lichtap');
@@ -83,10 +104,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // DungCu routes
     Route::get('/dungcu', [DungCuController::class, 'dungCuList'])->name('dungcu');
-    Route::post('/dungcu/add', [DungCuController::class, 'addDungCu'])->name('dungcu.add');
-    Route::get('/dungcu/edit/{id}', [DungCuController::class, 'editDungCu'])->name('dungcu.edit');
-    Route::post('/dungcu/update/{id}', [DungCuController::class, 'updateDungCu'])->name('dungcu.update');
-    Route::get('/dungcu/delete/{id}', [DungCuController::class, 'deleteDungCu'])->name('dungcu.delete');
+          Route::post('/dungcu/add', [DungCuController::class, 'addDungCu'])->name('dungcu.add');
+      Route::get('/dungcu/edit/{id}', [DungCuController::class, 'editDungCu'])->name('dungcu.edit');
+      Route::post('/dungcu/update/{id}', [DungCuController::class, 'updateDungCu'])->name('dungcu.update');
+      Route::get('/dungcu/delete/{id}', [DungCuController::class, 'deleteDungCu'])->name('dungcu.delete');
 
     // DanhMucDungCu routes
     Route::get('/danhmucdungcu', [DanhMucDungCuController::class, 'danhMucDungCuList'])->name('danhmucdungcu');
@@ -95,8 +116,57 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/danhmucdungcu/update/{id}', [DanhMucDungCuController::class, 'updateDanhMucDungCu'])->name('danhmucdungcu.update');
     Route::get('/danhmucdungcu/delete/{id}', [DanhMucDungCuController::class, 'deleteDanhMucDungCu'])->name('danhmucdungcu.delete');
 
-    Route::get('/thongke', function () { return view('admin.thongke'); })->name('thongke');
+    // Thống kê doanh thu từ gói tập: chỉ lấy state = 1
+    Route::get('/thongke', [GoiTapController::class, 'thongKeGoiTap'])->name('thongke');
     Route::get('/bmi', function () { return view('admin.bmi'); })->name('bmi');
+});
+
+// User routes
+Route::prefix('user')->name('user.')->group(function () {
+    // Trang chủ user
+    Route::get('/home', [UserController::class, 'home'])->name('home');
+    Route::get('', [UserController::class, 'home'])->name('home-no-slash'); // Thêm route này
+    
+    // Lớp tập
+    Route::get('/classes', [ClassController::class, 'index'])->name('classes');
+    Route::get('/class/{id}', [ClassController::class, 'show'])->name('class.detail');
+    Route::post('/comment/add', [ClassController::class, 'addComment'])->name('comment.add');
+    
+    // Lịch tập
+    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+    Route::get('/schedule1', [ScheduleController::class, 'schedule1'])->name('schedule1');
+    Route::get('/schedule2', [ScheduleController::class, 'schedule2'])->name('schedule2');
+    
+    // Giỏ hàng và thanh toán
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+    
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout1', [OrderController::class, 'checkout1'])->name('checkout1');
+    
+    // Thông tin khác
+    Route::get('/contact', [UserController::class, 'contact'])->name('contact');
+    Route::post('/contact/send', [UserController::class, 'sendContact'])->name('contact.send');
+    Route::get('/trainer', [TrainerController::class, 'index'])->name('trainer');
+    Route::get('/service', [UserController::class, 'service'])->name('service');
+    Route::get('/bmi', [UserController::class, 'bmi'])->name('bmi');
+
+    Route::get('/app', [UserController::class, 'app'])->name('app');
+    
+    // Hồ sơ người dùng (yêu cầu đăng nhập)
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('profile.change-password-form');
+        Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+        
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+        Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.detail');
+        Route::post('/checkout/process', [OrderController::class, 'processCheckout'])->name('checkout.process');
+    });
 });
 
 // Debug route để kiểm tra dữ liệu nhân viên
