@@ -37,9 +37,10 @@
                                                     <label class="form-check-label" for="selectAll"></label>
                                                 </div>
                                             </th>
-                                            <th width="40%">Tên lớp tập</th>
-                                            <th width="20%">Giá</th>
-                                            <th width="20%">Thời gian</th>
+                                            <th width="15%">Tên gói tập</th>
+                                            <th width="15%">Giá</th>
+                                            <th width="10%">Thời gian</th>
+                                            <th width="10%">Số lượng</th>
                                             <th width="15%">Thao tác</th>
                                         </tr>
                                     </thead>
@@ -49,7 +50,8 @@
                                         @endphp
                                         @foreach(session('cart') as $id => $item)
                                             @php
-                                                $total += $item['price'];
+                                                $qty = isset($item['quantity']) ? $item['quantity'] : 1;
+                                                $total += $item['price'] * $qty;
                                             @endphp
                                             <tr>
                                                 <td>
@@ -61,7 +63,7 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex-grow-1">
-                                                            <h6 class="mb-0">{{ $item['name'] }}</h6>
+                                                            <h6 class="mb-0">{{ $item['training_name']?? 'Không có tên' }}</h6>
                                                             <small class="text-muted">ID: {{ $id }}</small>
                                                         </div>
                                                     </div>
@@ -72,7 +74,12 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-info">{{ $item['time'] }}</span>
+                                                    <span class="badge bg-info">{{ $item['duration_days'] }}</span>
+                                                </td>
+                                                
+                                                
+                                                <td>
+                                                    {{ $qty }}
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('user.cart.remove', $id) }}" 
@@ -126,17 +133,13 @@
                 </div>
                 <h3 class="text-muted">Giỏ hàng trống</h3>
                 <p class="text-muted">Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
-                <a href="{{ route('classes') }}" class="btn btn-primary">
+                <a href="{{ route('user.classes') }}" class="btn btn-primary">
                     <i class="fa fa-arrow-left"></i> Xem các lớp tập
                 </a>
             </div>
         @endif
 
-        <div class="mt-4">
-            <a href="{{ route('home') }}" class="btn btn-warning">
-                <i class="fa fa-arrow-left"></i> Quay về trang chủ
-            </a>
-        </div>
+        
     </div>
 </main>
 @endsection

@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class LichTap extends Model
 {
+    public function getPhongtapAttribute() {
+        return $this->attributes['room'] ?? null;
+    }
     protected $table = 'training_schedules';
     protected $fillable = [
+        'id',
         'schedule_name',
         'start_time',
         'end_time',
@@ -17,6 +21,12 @@ class LichTap extends Model
         'deleted',
     ];
     public $timestamps = false;
+
+    // Quan hệ nhiều-1 với bảng training_categories
+    public function trainingCategory()
+    {
+        return $this->belongsTo(TrainingCategory::class, 'training_category_id');
+    }
 
     // Legacy accessors/mutators mapping
     public function getTenAttribute() { return $this->attributes['schedule_name'] ?? null; }
@@ -50,7 +60,6 @@ class LichTap extends Model
         ];
         $this->attributes['day_of_week'] = $map[$v] ?? $v;
     }
-    public function getPhongtapAttribute() { return $this->attributes['room'] ?? null; }
     public function setPhongtapAttribute($v) { $this->attributes['room'] = $v; }
     public function getIdloptapAttribute() { return $this->attributes['training_category_id'] ?? null; }
     public function setIdloptapAttribute($v) { $this->attributes['training_category_id'] = $v; }
@@ -75,7 +84,7 @@ class LichTap extends Model
             $mapped['day_of_week'] = $map[$vn] ?? $vn;
         }
         if (isset($data['phongtap'])) $mapped['room'] = $data['phongtap'];
-        if (isset($data['idloptap'])) $mapped['training_category_id'] = $data['idloptap'];
+        if (isset($data['training_category_id'])) $mapped['training_category_id'] = $data['training_category_id'];
         return $mapped;
     }
 
@@ -100,8 +109,8 @@ class LichTap extends Model
     }
 
     public static function updateLichTapById($id, $data)
-    {
-        $lt = self::findOrFail($id);
-        return $lt->update(self::translateFromLegacy($data));
-    }
+{
+    $lt = self::findOrFail($id);
+    $lt->update($data);
+}
 }

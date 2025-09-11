@@ -12,6 +12,9 @@ class NhanVienController extends Controller
     public function addNhanVien(Request $request)
     {
         if ($request->has('themmoi')) {
+
+            $data = $request->only(['full_name', 'phone_number', 'email', 'address', 'username', 'password']);
+            
             // Validation
             $validator = Validator::make($request->all(), NhanVien::$rules);
             
@@ -20,6 +23,13 @@ class NhanVienController extends Controller
                     ->withErrors($validator)
                     ->withInput();
             }
+
+            if (!empty($data['password'])) {
+                $data['password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
+                unset($data['password']);
+            }
+
+            $data['role_id'] =2; // Khách hàng
             
             // Sử dụng logic từ model
             NhanVien::createNhanVien($request);
@@ -31,19 +41,26 @@ class NhanVienController extends Controller
     {
         $nv = NhanVien::findOrFail($id);
 
-        // Validation (loại trừ email hiện tại, dùng bảng users)
-        $rules = NhanVien::$rules;
-    
-        $rules['email'] = 'required|email|max:100|unique:users,email,' . $id;
-        $validator = Validator::make($request->all(), $rules);
+        // Tùy chỉnh rules cho update: không bắt buộc đổi email, username, password nếu không thay đổi
+        $rules = [
+            'tennv'   => 'required|string|max:100',
+            'sodt'    => 'required|digits_between:9,11',
+            'email'   => 'required|email|max:100|unique:users,email,' . $nv->id,
+            'diachi'  => 'required|string|max:255',
+            'image'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'username'=> 'required|string|max:50|unique:users,username,' . $nv->id,
+            // Password chỉ required nếu nhập mới
+            'password'=> 'nullable|string|min:5',
+        ];
 
-        // Debug dữ liệu gửi lên
-        // dd($request->all(), $validator->errors());
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('nhanvien_update_id', $id)
+                ->with('nhanvien_update_error', true);
         }
 
         // Sử dụng logic từ model

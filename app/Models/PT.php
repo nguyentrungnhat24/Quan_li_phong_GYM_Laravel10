@@ -10,14 +10,13 @@ class PT extends Model
 {
     protected $table = 'trainers';
     protected $fillable = [
-        'training_category_id',
         'full_name',
-        'image_path',
         'phone_number',
         'email',
         'position',
         'philosophy',
-        'deleted',
+        'training_category_id',
+        'image_path',
     ];
     public $timestamps = false;
 
@@ -35,12 +34,13 @@ class PT extends Model
     public static function createPT(Request $request)
     {
         $data = self::translateFromLegacy($request->all());
-        
+        $data['training_category_id'] = $request->training_category_id; // Lưu danh mục
+
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('admin/uploaded', 'public');
             $data['image_path'] = 'storage/' . $path;
         }
-        
+
         return self::create($data);
     }
 
@@ -67,13 +67,15 @@ class PT extends Model
     {
         $pt = self::findOrFail($id);
         $data = self::translateFromLegacy($request->all());
-        
+        $data['training_category_id'] = $request->training_category_id; // Cập nhật danh mục
+
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('admin/uploaded', 'public');
             $data['image_path'] = 'storage/' . $path;
         }
-        
-        return $pt->update($data);
+    
+    
+    $pt->update($data);
     }
 
     /**
@@ -133,14 +135,24 @@ class PT extends Model
     public function getVaitroAttribute() { return $this->attributes['position'] ?? null; }
     public function getQuandiemAttribute() { return $this->attributes['philosophy'] ?? null; }
 
-    protected static function translateFromLegacy(array $data): array
+    public static function translateFromLegacy(array $data): array
     {
         $mapped = $data;
         if (isset($data['tenpt'])) $mapped['full_name'] = $data['tenpt'];
         if (isset($data['sodt'])) $mapped['phone_number'] = $data['sodt'];
         if (isset($data['vaitro'])) $mapped['position'] = $data['vaitro'];
         if (isset($data['quandiem'])) $mapped['philosophy'] = $data['quandiem'];
-        if (isset($data['image'])) $mapped['image_path'] = $data['image'];
+        // Các trường khác giữ nguyên
         return $mapped;
+    }
+
+    public function trainingCategory()
+    {
+        return $this->belongsTo(TrainingCategory::class, 'training_category_id');
+    }
+
+    public function scopeByTrainingCategory($query, $categoryId)
+    {
+        return $query->where('training_category_id', $categoryId);
     }
 }

@@ -25,9 +25,27 @@ class OrderController extends Controller
         return view('user.order-detail');
     }
 
-    public function checkout()
+    public function checkout(Request $request)
     {
-        return view('user.checkout');
+        $selected = $request->input('selected_items', []);
+        $cart = session('cart', []);
+        $checkoutCart = [];
+
+        foreach ($selected as $id) {
+            if (isset($cart[$id])) {
+                $checkoutCart[$id] = $cart[$id];
+            }
+        }
+
+        session(['checkout_cart' => $checkoutCart]);
+
+        return redirect()->route('user.checkout-page');
+    }
+
+    public function checkoutPage()
+    {
+        $checkoutCart = session('checkout_cart', []);
+        return view('user.checkout', compact('checkoutCart'));
     }
 
     public function checkout1()

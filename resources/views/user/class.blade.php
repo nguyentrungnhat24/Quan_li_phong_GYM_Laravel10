@@ -25,11 +25,9 @@
                   </div>
                   <div class="d-flex border-bottom">
                     <small class="flex-fill text-center border-end py-2">
-                      <i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $class->thoigian }}
+                      <i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $class->duration_days }} ngày
                     </small>
-                    <small class="flex-fill text-center border-end py-2">
-                      <i class="fa fa-calendar-alt text-primary me-2"></i>| {{ optional($class->pt)->tenpt }}
-                    </small>
+                    
                     <small class="flex-fill text-center py-2">|<i class="fa fa-user text-primary me-2"></i> 1 Người</small>
                   </div>
                   <div class="text-center p-4">

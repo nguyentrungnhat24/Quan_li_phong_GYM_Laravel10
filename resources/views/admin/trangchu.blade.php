@@ -35,11 +35,15 @@
         <a class="nav-link text-white" href="{{ route('admin.bmi') }}"><i class="fa-sharp fa-solid fa-list-check"></i></a>
         <h4>Kiểm tra chỉ số BMI</h4>
       </div>
+      <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <div class="box col-sm-6 col-md-4">
+          <button type="submit" class="nav-link text-white"><i class="fa-solid fa-right-from-bracket"></i></button>
+          <h4>Đăng xuất</h4>
+        </div>
+      </form>
       <div class="box col-sm-6 col-md-4">
-        <h4>Đăng xuất</h4>
-      </div>
-      <div class="box col-sm-6 col-md-4">
-        
+        <a class="nav-link text-white" href="#"><i class="fa-solid fa-user-plus"></i></a>
         <h4>Thay đổi mật khẩu</h4>
       </div>
     </div>

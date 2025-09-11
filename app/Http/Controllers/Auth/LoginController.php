@@ -7,12 +7,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
+    
 {
     public function showLoginForm()
     {
         return view('signin_signup.signin');
     }
-
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        $request->session()->flush(); // Xóa tất cả session
+        return redirect('/'); // Chuyển về trang index
+    }
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -30,16 +38,17 @@ class LoginController extends Controller
             $user = Auth::user();
             
             // Lưu thông tin vào session
-            session([
-                'user_id' => $user->id,
-                'username' => $user->username,
-                'role_id' => $user->role_id,
-            ]);
+            
 
             // Kiểm tra role và redirect
             if ($user->role_id == 1) {
                 return redirect()->route('admin.trangchu');
-            } elseif ($user->role_id == 2) {
+            } elseif ($user->role_id == 3) {
+                session([
+                'user_id' => $user->id,
+                'username' => $user->username,
+                'role_id' => $user->role_id,
+            ]);
                 return redirect()->route('user.home');
             } else {
                 Auth::logout();

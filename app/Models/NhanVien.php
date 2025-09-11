@@ -26,16 +26,16 @@ class NhanVien extends Model
             $originalName = $file->getClientOriginalName();
 
             // Tạo thư mục nếu chưa tồn tại
-            $uploadPath = public_path('admin/uploaded');
+            $uploadPath = public_path('uploaded');
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
 
             // Lưu file trực tiếp vào public/admin/uploaded
             $file->move($uploadPath, $originalName);
-            return '/admin/uploaded/' . $originalName;
+            return 'uploaded/' . $originalName;
         }
-        return 'admin/uploaded/avatar.png';
+        return 'uploaded/avatar.png';
     }
 
     // Xử lý upload ảnh cho update (giữ tên gốc, cho phép ghi đè)
@@ -46,32 +46,45 @@ class NhanVien extends Model
             $originalName = $file->getClientOriginalName();
 
             // Tạo thư mục nếu chưa tồn tại
-            $uploadPath = public_path('admin/uploaded');
+            $uploadPath = public_path('uploaded');
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
 
             // Lưu file trực tiếp vào public/admin/uploaded
             $file->move($uploadPath, $originalName);
-            return '/admin/uploaded/' . $originalName;
+            return 'uploaded/' . $originalName;
         }
         return null; // Không thay đổi ảnh
     }
+    
 
     // Tạo nhân viên mới với logic business
     public static function createNhanVien($request)
     {
-        $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'vaitro']);
-        $data['image'] = self::handleImageUpload($request);
+        $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'username', 'password']);
+        $data['image_path'] = self::handleImageUpload($request);
+
         $data = self::translateFromLegacy($data);
-        
+        $data['role_id'] = 2;
+
+        $data['full_name'] = $data['tennv'];
+        $data['phone_number'] = $data['sodt'];
+        $data['address'] = $data['diachi'];
+
+        // Hash password
+        if (!empty($data['password'])) {
+            $data['password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
+            unset($data['password']);
+        }
+
         return self::create($data);
     }
 
     // Cập nhật nhân viên với logic business
     public function updateNhanVien($request)
     {
-        $data = $request->only(['tennv', 'sodt', 'email', 'diachi']);
+        $data = $request->only(['tennv', 'sodt', 'email', 'diachi', 'username', 'password']);
         $newImagePath = $this->handleImageUploadForUpdate($request);
         if ($newImagePath) {
             $data['image_path'] = $newImagePath;
@@ -79,7 +92,13 @@ class NhanVien extends Model
         $data['full_name'] = $data['tennv'];
         $data['phone_number'] = $data['sodt'];
         $data['address'] = $data['diachi'];
-        unset($data['tennv'], $data['sodt'], $data['diachi']);
+
+        // Nếu có nhập password mới thì hash lại
+        if (!empty($data['password'])) {
+            $data['password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+        unset($data['tennv'], $data['sodt'], $data['diachi'], $data['password']);
+
         return $this->update($data);
     }
 
@@ -126,6 +145,8 @@ class NhanVien extends Model
         'email'   => 'required|email|max:100|unique:users,email',
         'diachi'  => 'required|string|max:255',
         'image'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'username'=> 'required|string|max:50|unique:users,username',
+        'password'=> 'required|string|min:5',
     ];
 }
 

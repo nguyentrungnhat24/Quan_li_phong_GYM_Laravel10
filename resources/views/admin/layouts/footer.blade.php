@@ -9,8 +9,8 @@
                     <ul style="margin-left:-50px">
                         <li><a href="#">470 Trần Đại Nghĩa</a></li>
                         <li><a href="#">Đà Nẵng, Việt Nam 2023</a></li>
-                        <li><a href="#">+84 367462316</a></li>
-                        <li><a href="#">xuanductran71@gmail.com.vn</a></li>
+                        <li><a href="#">+84 336238928</a></li>
+                        <li><a href="#">nguyentrungnhattp@gmail.com</a></li>
                     </ul>
         </div>
         <div id="b" class="col">

@@ -38,6 +38,16 @@
         <textarea name="quandiem" value="{{ old('quandiem') }}" required class="nv-form-input" rows="3"></textarea>
         @error('quandiem')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Danh mục đào tạo</label>
+        <select name="training_category_id" required class="nv-form-input">
+          <option value="">Chọn danh mục</option>
+          @foreach($categories as $category)
+            <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+          @endforeach
+        </select>
+        @error('training_category_id')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
       <input type="submit" name="themmoi" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Thêm PT" onclick="return ktEmail('txtEmail','msgEmail','Sai định dạng Email !')">
       @if(session('success'))
         <div class="alert alert-success mt-2">{{ session('success') }}</div>
@@ -57,14 +67,26 @@
 </div>
 <!-- Modal Update PT (ẩn/hiện bằng id02) -->
 <div id="id02" class="modal" style="display:none;">
-  <form id="updateForm" class="modal-content animate nv-form-modal" method="post" enctype="multipart/form-data">
+  <form id="updateForm" class="modal-content animate nv-form-modal" method="POST" enctype="multipart/form-data">
     @csrf
-    @method('POST')
+    @method('PUT')
     <div class="container" style="padding:0;">
+      @if(session('pt_update_id'))
+        <input type="hidden" id="update_id" value="{{ session('pt_update_id') }}">
+      @endif
+      @if($errors->any() && session('pt_update_error'))
+        <div class="alert alert-danger mt-2">
+          <ul class="mb-0">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
       <h3 class="mb-4 nv-form-modal-title">Cập nhật PT</h3>
       <div class="nv-form-group">
         <label class="nv-form-label">Tên PT</label>
-        <input type="text" name="tenpt" id="update-tenpt" required class="nv-form-input">
+        <input type="text" name="full_name" id="update-tenpt" required class="nv-form-input">
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Hình ảnh</label>
@@ -73,7 +95,7 @@
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Số điện thoại</label>
-        <input type="number" name="sodt" id="update-sodt" required class="nv-form-input">
+        <input type="number" name="phone_number" id="update-sodt" required class="nv-form-input">
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Email</label>
@@ -86,6 +108,15 @@
       <div class="nv-form-group">
         <label class="nv-form-label">Quan điểm</label>
         <textarea name="quandiem" id="update-quandiem" required class="nv-form-input" rows="3"></textarea>
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Danh mục đào tạo</label>
+        <select name="training_category_id" id="update-training-category" required class="nv-form-input">
+          <option value="">Chọn danh mục</option>
+          @foreach($categories as $category)
+            <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+          @endforeach
+        </select>
       </div>
 
       <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Cập nhật">
@@ -104,13 +135,13 @@
             <table class="table table-bordered table-hover" style="font-size:1.15rem; border-radius:14px; overflow:hidden; background:#fff;">
                 <thead style="background:#219150; color:#fff;">
                     <tr style="height:56px;">
-                        <th style="font-size:1.1rem; text-align:center;">ID</th>
-                        <th style="font-size:1.1rem; text-align:center;">Tên PT</th>
-                        <th style="font-size:1.1rem; text-align:center;">Ảnh</th>
-                        <th style="font-size:1.1rem; text-align:center;">Số điện thoại</th>
-                        <th style="font-size:1.1rem; text-align:center;">Email</th>
-                        <th style="font-size:1.1rem; text-align:center;">Vai trò</th>
-                        <th style="font-size:1.1rem; text-align:center;">Quan điểm</th>
+                        <th style="font-size:1.7rem; text-align:center;">ID</th>
+                        <th style="font-size:1.7rem; text-align:center;">Tên PT</th>
+                        <th style="font-size:1.7rem; text-align:center;">Ảnh</th>
+                        <th style="font-size:1.7rem; text-align:center;">Số điện thoại</th>
+                        <th style="font-size:1.7rem; text-align:center;">Email</th>
+                        <th style="font-size:1.7rem; text-align:center;">Vai trò</th>
+                        <th style="font-size:1.7rem; text-align:center;">Quan điểm</th>
                         <th style="text-align:center;">Sửa</th>
                         <th style="text-align:center;">Xóa</th>
                     </tr>
@@ -141,7 +172,8 @@
                                 data-email="{{ $pt['email'] }}" 
                                 data-vaitro="{{ $pt['vaitro'] }}" 
                                 data-quandiem="{{ $pt['quandiem'] }}" 
-                                data-image="{{ asset($pt['image']) }}">
+                                data-image="{{ asset($pt['image']) }}"
+                                data-training-category-id="{{ $pt['training_category_id'] }}"> 
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>
@@ -158,31 +190,41 @@
 @endsection
 <script>
 function showUpdateModal(btn) {
-    var id = btn.getAttribute('data-id');
-    var tenpt = btn.getAttribute('data-tenpt');
-    var sodt = btn.getAttribute('data-sodt');
-    var email = btn.getAttribute('data-email');
-    var vaitro = btn.getAttribute('data-vaitro');
-    var quandiem = btn.getAttribute('data-quandiem');
-    var image = btn.getAttribute('data-image');
-    // Fill vào form update
-    document.getElementById('update-tenpt').value = tenpt;
-    document.getElementById('update-sodt').value = sodt;
-    document.getElementById('update-email').value = email;
-    document.getElementById('update-vaitro').value = vaitro;
-    document.getElementById('update-quandiem').value = quandiem;
-    var imgPreview = document.getElementById('update-image-preview');
-    if(image) {
-        imgPreview.src = image;
-        imgPreview.style.display = 'inline-block';
-    } else {
-        imgPreview.style.display = 'none';
-    }
-    // Set action cho form
-    var form = document.getElementById('updateForm');
-    form.action = '/admin/pt/update/' + id;
-    // Hiện modal
+  var id = btn.getAttribute('data-id');
+  var tenpt = btn.getAttribute('data-tenpt');
+  var sodt = btn.getAttribute('data-sodt');
+  var email = btn.getAttribute('data-email');
+  var vaitro = btn.getAttribute('data-vaitro');
+  var quandiem = btn.getAttribute('data-quandiem');
+  var image = btn.getAttribute('data-image');
+  var trainingCategoryId = btn.getAttribute('data-training-category-id'); // Lấy danh mục
+
+  document.getElementById('update-tenpt').value = tenpt;
+  document.getElementById('update-sodt').value = sodt;
+  document.getElementById('update-email').value = email;
+  document.getElementById('update-vaitro').value = vaitro;
+  document.getElementById('update-quandiem').value = quandiem;
+  document.getElementById('update-training-category').value = trainingCategoryId; // Điền danh mục
+
+  var imgPreview = document.getElementById('update-image-preview');
+  if (image) {
+    imgPreview.src = image;
+    imgPreview.style.display = 'inline-block';
+  } else {
+    imgPreview.style.display = 'none';
+  }
+
+  var form = document.getElementById('updateForm');
+  form.action = '/admin/pt/update/' + id;
+  document.getElementById('id02').style.display = 'block';
+}
+
+// Tự động mở modal cập nhật nếu có lỗi
+window.onload = function() {
+  var updateId = document.getElementById('update_id');
+  if (updateId) {
     document.getElementById('id02').style.display = 'block';
+  }
 }
 function ktEmail(idTag, idMsg, msg) {
   var idTag = document.getElementById(idTag);

@@ -18,11 +18,11 @@
                 <div class="ftco-footer-widget mb-4 ml-md-5">
                     <h2 class="ftco-heading-2 text-white">Dịch vụ chính</h2>
                     <ul class="list-unstyled">
-                        <li><a href="{{ route('classes') }}" class="py-2 d-block text-light">Lớp tập đa dạng</a></li>
-                        <li><a href="{{ route('trainer') }}" class="py-2 d-block text-light">Huấn luyện viên cá nhân</a></li>
-                        <li><a href="{{ route('schedule') }}" class="py-2 d-block text-light">Lịch tập linh hoạt</a></li>
-                        <li><a href="{{ route('bmi') }}" class="py-2 d-block text-light">Tính chỉ số BMI</a></li>
-                        <li><a href="{{ route('service') }}" class="py-2 d-block text-light">Dịch vụ tư vấn</a></li>
+                        <li><a href="{{ route('user.classes') }}" class="py-2 d-block text-light">Lớp tập đa dạng</a></li>
+                        <li><a href="{{ route('user.trainer') }}" class="py-2 d-block text-light">Huấn luyện viên cá nhân</a></li>
+                        <li><a href="{{ route('user.schedule') }}" class="py-2 d-block text-light">Lịch tập linh hoạt</a></li>
+                        <li><a href="{{ route('user.bmi') }}" class="py-2 d-block text-light">Tính chỉ số BMI</a></li>
+                        
                     </ul>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 <div class="border-top pt-4">
                     <p class="text-light mb-0">
                         Copyright &copy; {{ date('Y') }} <strong>Stamina Gym</strong>. All rights reserved | 
-                        <a href="{{ route('contact') }}" class="text-primary">Liên hệ</a> | 
+                        <a href="{{ route('user.contact') }}" class="text-primary">Liên hệ</a> | 
                         <a href="#" class="text-primary">Chính sách bảo mật</a> | 
                         <a href="#" class="text-primary">Điều khoản sử dụng</a>
                     </p>

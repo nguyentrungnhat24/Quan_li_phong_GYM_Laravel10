@@ -17,6 +17,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
+        // dd($user);
         return view('user.profile', compact('user'));
     }
 
@@ -26,19 +27,25 @@ class ProfileController extends Controller
         return view('user.profile.edit', compact('user'));
     }
 
-    // public function update(Request $request)
-    // {
-    //     $user = Auth::user();
         
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-    //         'phone' => 'nullable|string|max:20',
-    //         'address' => 'nullable|string|max:500',
-    //     ]);
         
-    //     $user->update($request->only(['name', 'email', 'phone', 'address']));
-        
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+        \App\Models\User::updateUser($user->id, [
+            'full_name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone,
+            'address' => $request->address,
+        ]);
+        return redirect()->route('user.profile')->with('success', 'Cập nhật hồ sơ thành công!');
+    }
     //     return redirect()->back()->with('success', 'Cập nhật thông tin thành công!');
     // }
 

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
+        <a class="navbar-brand" href="{{ route('user.home') }}">
             <img src="{{ asset('user/images/logo.png') }}" alt="Stamina" class="logo">
             Stamina
         </a>
@@ -11,32 +11,30 @@
 
         <div class="collapse navbar-collapse" id="ftco-nav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('home') }}">Trang chủ</a>
+                <li class="nav-item {{ request()->routeIs('user.home') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.home') }}">Trang chủ</a>
                 </li>
                 
-                <li class="nav-item {{ request()->routeIs('classes*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('classes') }}">Lớp tập</a>
+                <li class="nav-item {{ request()->routeIs('user.classes*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.classes') }}">Lớp tập</a>
                 </li>
                 
-                <li class="nav-item {{ request()->routeIs('schedule*') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('schedule') }}">Lịch tập</a>
+                <li class="nav-item {{ request()->routeIs('user.schedule*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.schedule') }}">Lịch tập</a>
                 </li>
                 
-                <li class="nav-item {{ request()->routeIs('trainer') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('trainer') }}">Huấn luyện viên</a>
+                <li class="nav-item {{ request()->routeIs('user.trainer') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.trainer') }}">Huấn luyện viên</a>
                 </li>
                 
-                <li class="nav-item {{ request()->routeIs('service') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('service') }}">Dịch vụ</a>
+               
+                
+                <li class="nav-item {{ request()->routeIs('user.bmi') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.bmi') }}">BMI</a>
                 </li>
                 
-                <li class="nav-item {{ request()->routeIs('bmi') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('bmi') }}">BMI</a>
-                </li>
-                
-                <li class="nav-item {{ request()->routeIs('contact') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('contact') }}">Liên hệ</a>
+                <li class="nav-item {{ request()->routeIs('user.contact') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.contact') }}">Liên hệ</a>
                 </li>
                 
                 <li class="nav-item {{ request()->routeIs('user.cart') ? 'active' : '' }}">
@@ -61,8 +59,8 @@
                             {{ Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('user.profile') }}">Hồ sơ</a>
-                            <a class="dropdown-item" href="{{ route('user.orders') }}">Đơn hàng</a>
+                                <a class="dropdown-item" href="{{ route('user.profile') }}">Hồ sơ</a>
+                                <a class="dropdown-item" href="{{ route('user.orders') }}">Đơn hàng</a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                 @csrf

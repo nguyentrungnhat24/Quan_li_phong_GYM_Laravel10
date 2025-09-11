@@ -33,7 +33,17 @@
         <input type="text" name="address" value="{{ old('address') }}" required class="nv-form-input">
         @error('address')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
-      <input type="submit" name="themmoikh" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Đăng ký" onclick="return ktEmail('txtEmail','msgEmail','Sai định dạng Email !')">
+      <div class="nv-form-group">
+        <label class="nv-form-label">Tên đăng nhập</label>
+        <input type="text" name="username" value="{{ old('username') }}" required class="nv-form-input">
+        @error('username')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Mật khẩu</label>
+        <input type="password" name="password" required class="nv-form-input">
+        @error('password')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
+      <input type="submit" name="addKhachHang" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Đăng ký" onclick="return ktEmail('txtEmail','msgEmail','Sai định dạng Email !')">
       @if(session('success'))
         <div class="alert alert-success mt-2">{{ session('success') }}</div>
       @endif
@@ -59,11 +69,11 @@
       <h3 class="mb-4 nv-form-modal-title">Cập nhật khách hàng</h3>
       <div class="nv-form-group">
         <label class="nv-form-label">Tên khách hàng</label>
-        <input type="text" name="full_name" id="update-namee" required class="nv-form-input">
+        <input type="text" name="full_name" id="update-name" required class="nv-form-input">
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Hình ảnh</label>
-        <input type="file" name="image" class="nv-form-input">
+        <input type="file" name="image" id="update-image" class="nv-form-input">
         <img id="update-image-preview" src="" style="width:60px; margin-top:8px; border-radius:8px; display:none;">
       </div>
       <div class="nv-form-group">
@@ -76,7 +86,15 @@
       </div>
       <div class="nv-form-group">
         <label class="nv-form-label">Địa chỉ</label>
-        <input type="text" name="address" id="update-addresss" required class="nv-form-input">
+        <input type="text" name="address" id="update-address" required class="nv-form-input">
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Tên đăng nhập</label>
+        <input type="text" name="username" id="update-username" required class="nv-form-input">
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Mật khẩu (để trống nếu không đổi)</label>
+        <input type="password" name="password" id="update-password" class="nv-form-input">
       </div>
 
       <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Cập nhật">
@@ -95,12 +113,12 @@
             <table class="table table-bordered table-hover" style="font-size:1.15rem; border-radius:14px; overflow:hidden; background:#fff;">
                 <thead style="background:#219150; color:#fff;">
                     <tr style="height:56px;">
-                        <th style="font-size:1.1rem; text-align:center;">ID</th>
-                        <th style="font-size:1.1rem; text-align:center;">Họ và tên</th>
-                        <th style="font-size:1.1rem; text-align:center;">Ảnh</th>
-                        <th style="font-size:1.1rem; text-align:center;">Số điện thoại</th>
-                        <th style="font-size:1.1rem; text-align:center;">Email</th>
-                        <th style="font-size:1.1rem; text-align:center;">Địa chỉ</th>
+                        <th style="font-size:1.7rem; text-align:center;">ID</th>
+                        <th style="font-size:1.7rem; text-align:center;">Họ và tên</th>
+                        <th style="font-size:1.7rem; text-align:center;">Ảnh</th>
+                        <th style="font-size:1.7rem; text-align:center;">Số điện thoại</th>
+                        <th style="font-size:1.7rem; text-align:center;">Email</th>
+                        <th style="font-size:1.7rem; text-align:center;">Địa chỉ</th>
                         
                         <th style="text-align:center;">Sửa</th>
                         <th style="text-align:center;">Xóa</th>
@@ -128,11 +146,12 @@
                                 href="javascript:void(0);" 
                                 onclick="showUpdateModal(this)" 
                                 data-id="{{ $kh['id'] }}"
-                                data-namee="{{ $kh['full_name'] ?? $kh['namee'] }}" 
+                                data-name="{{ $kh['full_name'] }}" 
                                 data-phone_number="{{ $kh['phone_number'] }}" 
                                 data-email="{{ $kh['email'] }}" 
-                                data-addresss="{{ $kh['address'] ?? $kh['addresss'] }}" 
-                                data-image="{{ asset($kh['image_path'] ?? $kh['image']) }}">
+                                data-address="{{ $kh['address']  }}" 
+                                data-image="{{ asset($kh['image_path'] ?? $kh['image'] ) }}"
+                                data-username="{{ $kh['username'] }}">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>
@@ -151,16 +170,18 @@
 <script>
 function showUpdateModal(btn) {
     var id = btn.getAttribute('data-id');
-    var namee = btn.getAttribute('data-namee');
+    var full_name = btn.getAttribute('data-name');
     var phone_number = btn.getAttribute('data-phone_number');
     var email = btn.getAttribute('data-email');
-    var addresss = btn.getAttribute('data-addresss');
+    var address = btn.getAttribute('data-address');
     var image = btn.getAttribute('data-image');
+    var username = btn.getAttribute('data-username');
     // Fill vào form update
-    document.getElementById('update-namee').value = namee;
+    document.getElementById('update-name').value = full_name;
     document.getElementById('update-phone_number').value = phone_number;
     document.getElementById('update-email').value = email;
-    document.getElementById('update-addresss').value = addresss;
+    document.getElementById('update-address').value = address;
+    document.getElementById('update-username').value = username;
     var imgPreview = document.getElementById('update-image-preview');
     if(image) {
         imgPreview.src = image;

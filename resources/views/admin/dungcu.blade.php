@@ -49,7 +49,7 @@
 
       <input type="hidden" name="themmoi" value="1">
 
-      <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Thêm Dụng Cụ">
+      <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal"  style="font-size: 13px" value="Thêm Dụng Cụ">
       <button type="button" onclick="document.getElementById('addModal').style.display='none'" class="btn btn-danger w-100 mt-2 nv-btn-modal">Hủy</button>
     </div>
   </form>
@@ -117,7 +117,7 @@
       @foreach($dungCuTheoDanhMuc as $danhMucId => $data)
         @if($data['dungCu']->count() > 0)
           <div class="mb-5">
-            <h3 class="mb-3" style="color: #219150; font-size: 1.5rem; border-bottom: 2px solid #219150; padding-bottom: 8px;">
+            <h3 class="mb-3" style="color: #219150; font-size: 1.7rem; border-bottom: 2px solid #219150; padding-bottom: 8px;">
               {{ $data['danhMuc']->tendmdc }}
             </h3>
             <div class="row">
@@ -134,14 +134,14 @@
                       @endif
                     </div>
                     <div class="card-body d-flex flex-column">
-                      <h5 class="card-title" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 8px;">{{ $dc->tendc }}</h5>
-                      <p class="card-text mb-2">
+                      <h5 class="card-title" style="font-size: 1.7rem; font-weight: 600; margin-bottom: 8px;">{{ $dc->tendc }}</h5>
+                      <p class="card-text mb-2" style="font-size: 16px">
                         <strong>Giá:</strong> {{ number_format($dc->gia) }} VNĐ
                       </p>
-                      <p class="card-text mb-2">
+                      <p class="card-text mb-2" style="font-size: 16px">
                         <strong>Số lượng:</strong> {{ $dc->soluong }}
                       </p>
-                      <p class="card-text mb-3">
+                      <p class="card-text mb-3" style="font-size: 16px">
                         <strong>Tình trạng:</strong>
                         @if($dc->tinhtrang == 'Mới')
                           <span class="badge bg-success">Mới</span>
@@ -150,7 +150,8 @@
                         @endif
                       </p>
                       <div class="mt-auto d-flex gap-2">
-                        <button class="btn btn-warning btn-sm flex-fill" onclick="showUpdateModal(this)"
+                        <button class="btn btn-warning btn-sm flex-fill"  style="font-size: 13px"
+                                onclick="showUpdateModal(this)"
                                 data-id="{{ $dc->id }}"
                                 data-tendc="{{ $dc->tendc }}"
                                 data-iddmdc="{{ $dc->iddmdc }}"
@@ -160,7 +161,7 @@
                           <i class="fas fa-edit"></i> Sửa
                         </button>
                         <a href="{{ route('admin.dungcu.delete', ['id' => $dc->id]) }}" 
-                           class="btn btn-danger btn-sm flex-fill"
+                           class="btn btn-danger btn-sm flex-fill" style="font-size: 13px"
                            onclick="return confirm('Bạn có chắc muốn xóa dụng cụ này?')">
                           <i class="fas fa-trash"></i> Xóa
                         </a>

@@ -32,14 +32,14 @@ Route::get('/', function () {
 });
 
 // Các route cơ bản cho user (không cần prefix)
-Route::get('/home', [UserController::class, 'home'])->name('home');
-Route::get('/classes', [ClassController::class, 'index'])->name('classes');
-Route::get('/class/{id}', [ClassController::class, 'show'])->name('class.detail');
-Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
-Route::get('/contact', [UserController::class, 'contact'])->name('contact');
-Route::get('/trainer', [TrainerController::class, 'index'])->name('trainer');
-Route::get('/service', [UserController::class, 'service'])->name('service');
-Route::get('/bmi', [UserController::class, 'bmi'])->name('bmi');
+// Route::get('/home', [UserController::class, 'home'])->name('home');
+// Route::get('/classes', [ClassController::class, 'index'])->name('classes');
+// Route::get('/class/{id}', [ClassController::class, 'show'])->name('class.detail');
+// Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+// Route::get('/contact', [UserController::class, 'contact'])->name('contact');
+// Route::get('/trainer', [TrainerController::class, 'index'])->name('trainer');
+// Route::get('/service', [UserController::class, 'service'])->name('service');
+// Route::get('/bmi', [UserController::class, 'bmi'])->name('bmi');
 
 Route::get('admin/app', function () {
     return view('admin.layouts.app');
@@ -83,9 +83,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/pt', [PTController::class, 'ptList'])->name('pt');
     Route::post('/pt/add', [PTController::class, 'addPT'])->name('pt.add');
     Route::get('/pt/edit/{id}', [PTController::class, 'editPT'])->name('pt.edit');
-    Route::post('/pt/update/{id}', [PTController::class, 'updatePT'])->name('pt.update');
+    Route::put('/pt/update/{id}', [PTController::class, 'updatePT'])->name('pt.update');
     Route::get('/pt/delete/{id}', [PTController::class, 'deletePT'])->name('pt.delete');
     Route::get('/pt/export', [PTController::class, 'exportPT'])->name('pt.export');
+    Route::get('/pt-by-category', [PTController::class, 'ptByCategory'])->name('admin.pt.by_category');
 
     // GoiTap routes
     Route::get('/goitap', [GoiTapController::class, 'goiTapList'])->name('goitap');
@@ -143,7 +144,8 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
     
-    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout-page', [CartController::class, 'checkoutPage'])->name('checkout.page');
     Route::get('/checkout1', [OrderController::class, 'checkout1'])->name('checkout1');
     
     // Thông tin khác
@@ -154,7 +156,10 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('/bmi', [UserController::class, 'bmi'])->name('bmi');
 
     Route::get('/app', [UserController::class, 'app'])->name('app');
-    
+
+    // Route::post('/checkout', [CartController::class, 'checkout'])->name('user.checkout');
+    Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('checkout-page');
+
     // Hồ sơ người dùng (yêu cầu đăng nhập)
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
@@ -167,6 +172,7 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.detail');
         Route::post('/checkout/process', [OrderController::class, 'processCheckout'])->name('checkout.process');
     });
+    
 });
 
 // Debug route để kiểm tra dữ liệu nhân viên

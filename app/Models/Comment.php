@@ -6,32 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $table = 'tb_comment';
+    protected $table = 'comments';
     
     protected $fillable = [
-        'iduser',
-        'idlt', 
-        'name',
+        'user_id',
+        'schedule_id', 
         'title',
-        'comment'
+        'comment_text',
+        'deleted'
     ];
 
     public $timestamps = false;
 
     /**
-     * Lớp tập mà bình luận thuộc về
-     */
-    public function lopTap()
-    {
-        return $this->belongsTo(DanhMucLopTap::class, 'idlt');
-    }
-
-    /**
-     * User đã bình luận
+     * Người dùng đã bình luận
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'iduser');
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Lịch tập mà bình luận thuộc về
+     */
+    public function schedule()
+    {
+        return $this->belongsTo(LichTap::class, 'schedule_id');
     }
 
     /**

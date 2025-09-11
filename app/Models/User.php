@@ -80,23 +80,34 @@ class User extends Authenticatable
     }
 
     // Tạo user mới, xử lý upload ảnh nếu có
-    public static function createUser($data) {
-        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
-            $path = $data['image']->store('admin/uploaded', 'public');
-            $data['image_path'] = 'storage/' . $path;
+    public static function createUser($data)
+    {
+        if (isset($data['image'])) {
+            $data['image_path'] = self::handleImageUpload($data['image']);
+            unset($data['image']);
         }
-        $data = self::translateFromLegacy($data);
+        
+
+        // Không cần map lại nếu tên trường đã đúng
+        if (empty($data['password'])) {
+            unset($data['password']);
+        }
+
         return self::create($data);
     }
 
     // Cập nhật user
-    public static function updateUser($id, $data) {
+    public static function updateUser($id, $data)
+    {
         $user = self::findOrFail($id);
-        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
-            $path = $data['image']->store('admin/uploaded', 'public');
-            $data['image_path'] = 'storage/' . $path;
+        if (isset($data['image'])) {
+            $data['image_path'] = self::handleImageUpload($data['image']);
         }
-        $data = self::translateFromLegacy($data);
+        if (!empty($data['password'])) {
+            $data['password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+       
+        unset($data['password'], $data['image']);
         $user->update($data);
         return $user;
     }
@@ -129,4 +140,23 @@ class User extends Authenticatable
         if (isset($data['password'])) $mapped['password_hash'] = bcrypt($data['password']);
         return $mapped;
     }
+
+    public static function handleImageUpload($file)
+    {
+        if (!$file) return null;
+        $filename =   $file->getClientOriginalName();
+        $path = 'uploaded/' . $filename;
+        $file->move(public_path('uploaded'), $filename);
+        return $path;
+    }
+
+    public static $rules = [
+        'tennv'   => 'required|string|max:100',
+        'sodt'    => 'required|digits_between:9,11',
+        'email'   => 'required|email|max:100|unique:users,email',
+        'diachi'  => 'required|string|max:255',
+        'image'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'username'=> 'required|string|max:50|unique:users,username',
+        'password'=> 'required|string|min:5',
+    ];
 }

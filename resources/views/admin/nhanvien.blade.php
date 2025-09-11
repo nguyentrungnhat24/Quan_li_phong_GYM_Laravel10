@@ -34,6 +34,16 @@
         <input type="text" name="diachi" value="{{ old('diachi') }}" required class="nv-form-input">
         @error('diachi')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Username</label>
+        <input type="text" name="username" value="{{ old('username') }}" required class="nv-form-input">
+        @error('username')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Password</label>
+        <input type="password" name="password" required class="nv-form-input">
+        @error('password')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
 
       <input type="submit" name="themmoi" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Đăng ký" onclick="return ktEmail('txtEmail','msgEmail','Sai định dạng Email !')">
       @if(session('success'))
@@ -59,6 +69,18 @@
     @csrf
     @method('PUT')
     <div class="container" style="padding:0;">
+      @if(session('nhanvien_update_id'))
+        <input type="hidden" id="update_id" value="{{ session('nhanvien_update_id') }}">
+      @endif
+      @if($errors->any() && session('nhanvien_update_error'))
+        <div class="alert alert-danger mt-2">
+          <ul class="mb-0">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
       <h3 class="mb-4 nv-form-modal-title">Cập nhật nhân viên</h3>
       <div class="nv-form-group">
         <label class="nv-form-label">Tên nhân viên</label>
@@ -80,6 +102,14 @@
       <div class="nv-form-group">
         <label class="nv-form-label">Địa chỉ</label>
         <input type="text" name="diachi" id="update-diachi" required class="nv-form-input">
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Username</label>
+        <input type="text" name="username" id="update-username" required class="nv-form-input">
+      </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Password (để trống nếu không đổi)</label>
+        <input type="password" name="password" id="update-password" class="nv-form-input">
       </div>
 
       <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Cập nhật">
@@ -146,6 +176,7 @@
         data-sodt="{{ $nv['sodt'] }}"
         data-email="{{ $nv['email'] }}"
         data-diachi="{{ $nv['diachi'] }}"
+        data-username="{{ $nv['username'] }}"
 
         data-image="{{ asset($nv['image']) }}">
         <i class="fas fa-edit"></i></a>
@@ -164,12 +195,12 @@
       <table class="table table-bordered table-hover" style="font-size:1.15rem; border-radius:14px; overflow:hidden; background:#fff;">
         <thead style="background:#219150; color:#fff;">
           <tr style="height:56px;">
-            <th style="font-size:1.1rem; text-align:center;">ID</th>
-            <th style="font-size:1.1rem; text-align:center;">Họ và tên</th>
-            <th style="font-size:1.1rem; text-align:center;">Ảnh</th>
-            <th style="font-size:1.1rem; text-align:center;">Số điện thoại</th>
-            <th style="font-size:1.1rem; text-align:center;">Email</th>
-            <th style="font-size:1.1rem; text-align:center;">Địa chỉ</th>
+            <th style="font-size:1.7rem; text-align:center;">ID</th>
+            <th style="font-size:1.7rem; text-align:center;">Họ và tên</th>
+            <th style="font-size:1.7rem; text-align:center;">Ảnh</th>
+            <th style="font-size:1.7rem; text-align:center;">Số điện thoại</th>
+            <th style="font-size:1.7rem; text-align:center;">Email</th>
+            <th style="font-size:1.7rem; text-align:center;">Địa chỉ</th>
 
             <th style="text-align:center;"></th>
             <th style="text-align:center;"></th>
@@ -178,14 +209,14 @@
         <tbody>
           @foreach($nhanviens as $i => $nv)
           <tr style="height:72px; vertical-align:middle;">
-            <td style="text-align:center;">{{ $i+1 }}</td>
-            <td style="text-align:center; font-weight:500;">{{ $nv['tennv'] }}</td>
+            <td style="text-align:center; font-size:1.6rem;">{{ $i+1 }}</td>
+            <td style="text-align:center; font-weight:500; font-size:1.6rem;">{{ $nv['tennv'] }}</td>
             <td style="text-align:center;">
               <img class="avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; display:inline-block; border:2px solid #eee; background:#fff;" src="{{ asset($nv['image']) }}">
             </td>
-            <td style="text-align:center;">{{ $nv['sodt'] }}</td>
-            <td style="text-align:center;">{{ $nv['email'] }}</td>
-            <td style="text-align:center;">{{ $nv['diachi'] }}</td>
+            <td style="text-align:center; font-size:1.6rem;">{{ $nv['sodt'] }}</td>
+            <td style="text-align:center; font-size:1.6rem;">{{ $nv['email'] }}</td>
+            <td style="text-align:center; font-size:1.6rem;">{{ $nv['diachi'] }}</td>
 
             <td style="text-align:center;">
               <a class="btn"
@@ -204,6 +235,7 @@
                 data-sodt="{{ $nv['sodt'] }}"
                 data-email="{{ $nv['email'] }}"
                 data-diachi="{{ $nv['diachi'] }}"
+                data-username="{{ $nv['username'] }}"
 
                 data-role="{{ $nv['role'] ?? '' }}"
                 data-image="{{ asset($nv['image']) }}">
@@ -226,23 +258,20 @@
 
 <script>
   function showUpdateModal(btn) {
-    // Lấy data từ nút
     var id = btn.getAttribute('data-id');
     var tennv = btn.getAttribute('data-tennv');
     var sodt = btn.getAttribute('data-sodt');
     var email = btn.getAttribute('data-email');
     var diachi = btn.getAttribute('data-diachi');
-
     var image = btn.getAttribute('data-image');
+    var username = btn.getAttribute('data-username');
 
-    // Fill vào form
     document.getElementById('update-tennv').value = tennv;
     document.getElementById('update-sodt').value = sodt;
     document.getElementById('update-email').value = email;
     document.getElementById('update-diachi').value = diachi;
+    document.getElementById('update-username').value = username;
 
-
-    // Ảnh preview
     var imgPreview = document.getElementById('update-image-preview');
     if (image) {
       imgPreview.src = image;
@@ -251,11 +280,16 @@
       imgPreview.style.display = 'none';
     }
 
-    // Set action cho form
     var form = document.getElementById('updateForm');
     form.action = '/admin/nhanvien/update/' + id;
-
-    // Hiện modal
     document.getElementById('id02').style.display = 'block';
+  }
+
+  // Tự động mở modal cập nhật nếu có lỗi
+  window.onload = function() {
+    var updateId = document.getElementById('update_id');
+    if (updateId) {
+      document.getElementById('id02').style.display = 'block';
+    }
   }
 </script>

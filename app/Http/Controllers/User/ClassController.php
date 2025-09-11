@@ -12,15 +12,18 @@ class ClassController extends Controller
 {
     public function index()
     {
-        $classes = DanhMucLopTap::with('pt')->get();
+        $classes = DanhMucLopTap::with('pts')->get();
         return view('user.class', compact('classes'));
     }
 
     public function show($id)
     {
-        $class = DanhMucLopTap::with('pt')->findOrFail($id);
-        $lichTaps = LichTap::all();
-        $comments = Comment::where('idlt', $id)->orderBy('id', 'desc')->paginate(4);
+        $class = DanhMucLopTap::with('pts')->findOrFail($id);
+
+        // Sửa lại truy vấn lịch tập cho đúng lớp tập
+        $lichTaps = LichTap::where('training_category_id', $id)->get(); // hoặc 'danh_muc_lop_tap_id' nếu đúng tên cột
+        // dd($lichTaps);
+        $comments = Comment::where('schedule_id', $id)->orderBy('id', 'desc')->paginate(4);
         
         return view('user.Chitietgoitap', compact('class', 'lichTaps', 'comments'));
     }

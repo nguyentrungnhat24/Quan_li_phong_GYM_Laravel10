@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DanhMucLopTap extends Model
 {
+    // Quan hệ 1-nhiều với PT
+    public function pts()
+    {
+        return $this->hasMany(PT::class, 'training_category_id');
+    }
     protected $table = 'training_categories';
     protected $fillable = [
         'category_name', 'price', 'duration_days', 'deleted'

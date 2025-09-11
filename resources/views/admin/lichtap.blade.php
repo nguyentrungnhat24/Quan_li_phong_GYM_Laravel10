@@ -40,6 +40,16 @@
         <input type="text" name="phongtap" value="{{ old('phongtap') }}" required class="nv-form-input">
         @error('phongtap')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Danh mục đào tạo</label>
+        <select name="training_category_id" required class="nv-form-input">
+            <option value="">Chọn danh mục</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+            @endforeach
+        </select>
+        @error('training_category_id')<div class="text-danger">{{ $message }}</div>@enderror
+      </div>
       <input type="submit" name="themmoilichtap" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Thêm Lịch Tập">
       @if(session('success'))
         <div class="alert alert-success mt-2">{{ session('success') }}</div>
@@ -92,6 +102,15 @@
         <label class="nv-form-label">Phòng tập</label>
         <input type="text" name="phongtap" id="update-phongtap" required class="nv-form-input">
       </div>
+      <div class="nv-form-group">
+        <label class="nv-form-label">Danh mục đào tạo</label>
+        <select name="training_category_id" id="update-training-category" required class="nv-form-input">
+            <option value="">Chọn danh mục</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+            @endforeach
+        </select>
+      </div>
       <input type="submit" class="btn btn-success w-100 mt-2 nv-btn-modal" value="Cập nhật">
       <button type="button" onclick="document.getElementById('id02').style.display='none'" class="btn btn-danger w-100 mt-2 nv-btn-modal">Hủy</button>
     </div>
@@ -127,7 +146,7 @@
                             <td style="text-align:center;">{{ $lt['NgayTap'] }}</td>
                             <td style="text-align:center;">{{ $lt['phongtap'] }}</td>
                             <td style="text-align:center;">
-                                <a class="btn" style="background:#ffc107 ; color:#fff; font-size:1.3rem; border-radius:50%; padding:10px 14px; box-shadow:0 2px 6px #bbb; display:inline-flex; align-items:center; justify-content:center;" href="javascript:void(0);" onclick="showUpdateModal(this)" data-id="{{ $lt['id'] }}" data-Ten="{{ $lt['Ten'] }}" data-BatDau="{{ $lt['BatDau'] }}" data-KetThuc="{{ $lt['KetThuc'] }}" data-NgayTap="{{ $lt['NgayTap'] }}" data-phongtap="{{ $lt['phongtap'] }}">
+                                <a class="btn" style="background:#ffc107 ; color:#fff; font-size:1.3rem; border-radius:50%; padding:10px 14px; box-shadow:0 2px 6px #bbb; display:inline-flex; align-items:center; justify-content:center;" href="javascript:void(0);" onclick="showUpdateModal(this)" data-id="{{ $lt['id'] }}" data-Ten="{{ $lt['Ten'] }}" data-BatDau="{{ $lt['BatDau'] }}" data-KetThuc="{{ $lt['KetThuc'] }}" data-NgayTap="{{ $lt['NgayTap'] }}" data-phongtap="{{ $lt['phongtap'] }}" data-training-category-id="{{ $lt['training_category_id'] }}"> <!-- Thêm danh mục -->
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>
@@ -150,15 +169,20 @@ function showUpdateModal(btn) {
     var KetThuc = btn.getAttribute('data-KetThuc');
     var NgayTap = btn.getAttribute('data-NgayTap');
     var phongtap = btn.getAttribute('data-phongtap');
-    // Fill vào form update
+    var trainingCategoryId = btn.getAttribute('data-training-category-id'); // Lấy danh mục
+
+    // Điền dữ liệu vào form update
     document.getElementById('update-Ten').value = Ten;
     document.getElementById('update-BatDau').value = BatDau;
     document.getElementById('update-KetThuc').value = KetThuc;
     document.getElementById('update-NgayTap').value = NgayTap;
     document.getElementById('update-phongtap').value = phongtap;
+    document.getElementById('update-training-category').value = trainingCategoryId; // Điền danh mục
+
     // Set action cho form
     var form = document.getElementById('updateForm');
     form.action = '/admin/lichtap/update/' + id;
+
     // Hiện modal
     document.getElementById('id02').style.display = 'block';
 }

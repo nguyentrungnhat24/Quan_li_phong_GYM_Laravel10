@@ -11,7 +11,7 @@
                 <h1 class="mb-3">Không có sự đau đớn, không có sự thay đổi.</h1>
                 <p class="lead mx-auto desc mb-5">Hãy là phiên bản tốt nhất của chính bạn.</p>
                 <p class="text-center">
-                    <a href="{{ route('classes') }}" class="btn btn-outline-white py-3 px-5">BẮT ĐẦU</a>
+                    <a href="{{ route('user.classes') }}" class="btn btn-outline-white py-3 px-5">BẮT ĐẦU</a>
                 </p>
             </div>
         </div>
@@ -27,7 +27,7 @@
             Đóng cửa: 21:00
         </div>
         <div class="cta ml-auto">
-            <a href="{{ route('contact') }}" class="smoothscroll d-flex d-md-flex align-items-center btn">
+            <a href="{{ route('user.contact') }}" class="smoothscroll d-flex d-md-flex align-items-center btn">
                 <span class="mx-auto">
                     <span>LIÊN HỆ</span>
                     <span class="arrow icon-keyboard_arrow_right"></span>
@@ -55,7 +55,7 @@
                     </div>
                     <h3>Lớp tập đa dạng</h3>
                     <p>Tham gia các lớp tập từ cơ bản đến nâng cao với huấn luyện viên chuyên nghiệp</p>
-                    <a href="{{ route('classes') }}" class="btn btn-primary">Xem lớp tập</a>
+                    <a href="{{ route('user.classes') }}" class="btn btn-primary">Xem lớp tập</a>
                 </div>
             </div>
             
@@ -66,7 +66,7 @@
                     </div>
                     <h3>Huấn luyện viên chuyên nghiệp</h3>
                     <p>Đội ngũ PT giàu kinh nghiệm sẽ hướng dẫn và hỗ trợ bạn trong quá trình tập luyện</p>
-                    <a href="{{ route('trainer') }}" class="btn btn-primary">Gặp PT</a>
+                    <a href="{{ route('user.trainer') }}" class="btn btn-primary">Gặp PT</a>
                 </div>
             </div>
             
@@ -77,7 +77,7 @@
                     </div>
                     <h3>Lịch tập linh hoạt</h3>
                     <p>Xem lịch tập và đăng ký các buổi tập phù hợp với thời gian của bạn</p>
-                    <a href="{{ route('schedule') }}" class="btn btn-primary">Xem lịch</a>
+                    <a href="{{ route('user.schedule') }}" class="btn btn-primary">Xem lịch</a>
                 </div>
             </div>
         </div>
@@ -112,7 +112,7 @@
             <div class="col-md-8">
                 <h2 class="text-white mb-4">Sẵn sàng bắt đầu hành trình fitness?</h2>
                 <p class="text-white mb-4">Tham gia ngay hôm nay để nhận được tư vấn miễn phí và khuyến mãi đặc biệt</p>
-                <a href="{{ route('contact') }}" class="btn btn-outline-white btn-lg">Liên hệ ngay</a>
+                <a href="{{ route('user.contact') }}" class="btn btn-outline-white btn-lg">Liên hệ ngay</a>
             </div>
         </div>
     </div>

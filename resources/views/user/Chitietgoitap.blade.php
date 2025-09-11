@@ -17,16 +17,14 @@
       <div class="row g-4 justify-content-center">
         <div class="col-lg-6 col-md-8">
           <div class="package-item">
-            <div class="overflow-hidden">
-              <img class="img-fluid" src="{{ asset('user/images/img_1.jpg') }}" alt="{{ $class->tenloptap }}">
+            <div class="overflow-hidden d-flex justify-content-center align-items-center" style="height:400px;">
+              <img class="img-fluid rounded" src="{{ asset('user/images/img_1.jpg') }}" alt="{{ $class->tenloptap }}" style="max-height:100%; max-width:100%; object-fit:cover;">
             </div>
             <div class="d-flex border-bottom">
               <small class="flex-fill text-center border-end py-2">
-                <i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $class->thoigian }}
+                <i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $class->duration_days }} ngày
               </small>
-              <small class="flex-fill text-center border-end py-2">
-                <i class="fa fa-calendar-alt text-primary me-2"></i>{{ optional($class->pt)->tenpt }}
-              </small>
+              
               <small class="flex-fill text-center py-2">
                 <i class="fa fa-user text-primary me-2"></i> 1 Người
               </small>
@@ -38,8 +36,9 @@
               <div class="d-flex justify-content-center mb-2">
                 <form action="{{ route('user.cart.add') }}" method="POST">
                   @csrf
-                  <input type="hidden" name="goi_tap_id" value="{{ $class->id }}">
+                  <input type="hidden" name="category_id" value="{{ $class->id}}">
                   <input type="hidden" name="soluong" value="1">
+                  <input type="hidden" name="price" value="{{ $class->gia }}">
                   <button type="submit" class="btn btn-success" name="themvaogio">
                     <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
                   </button>
@@ -63,7 +62,8 @@
         </div>
 
         @php
-          $days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
+          // Mảng ngày bằng tiếng Anh để khớp với dữ liệu SQL
+          $days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         @endphp
 
         <div class="row">
@@ -71,7 +71,7 @@
             <ul class="nav days d-flex" role="tablist">
               @foreach($days as $index => $day)
                 @php
-                  $tabId = strtolower(str_replace(' ', '-', $day));
+                  $tabId = strtolower($day);
                 @endphp
                 <li class="nav-item">
                   <a class="nav-link {{ $index === 0 ? 'active' : '' }}" id="{{ $tabId }}-tab" data-toggle="tab" href="#{{ $tabId }}" role="tab" aria-controls="{{ $tabId }}" aria-selected="{{ $index === 0 ? 'true' : 'false' }}">{{ $day }}</a>
@@ -84,11 +84,13 @@
         <div class="tab-content bg-light">
           @foreach($days as $index => $day)
             @php
-              $tabId = strtolower(str_replace(' ', '-', $day));
+              $tabId = strtolower($day);
               $limit = 2;
               $pageParam = 'page_' . $tabId;
               $page = (int) request()->query($pageParam, 1);
-              $dayItems = $lichTaps->where('NgayTap', $day)->where('idloptap', $class->id ?? 0)->values();
+
+              // Lọc lịch tập theo ngày
+              $dayItems = $lichTaps->where('day_of_week', $day)->values();
               $total = $dayItems->count();
               $totalPages = (int) ceil(max($total, 1) / $limit);
               $itemsToShow = $dayItems->slice(($page - 1) * $limit, $limit);
@@ -103,10 +105,10 @@
                         <img src="{{ asset('user/images/img_1.jpg') }}" alt="Class image">
                       </a>
                       <div class="class-item-text">
-                        <span>{{ $item->BatDau }}-{{ $item->KetThuc }}</span>
-                        <h2><a href="#">{{ $item->Ten }}</a></h2>
+                        <span>{{ $item->start_time }} - {{ $item->end_time }}</span>
+                        <h2><a href="#">{{ $item->schedule_name }}</a></h2>
                         <span>Phòng tập: </span>
-                        <span>{{ $item->phongtap }}</span>
+                        <span>{{ $item->room }}</span>
                       </div>
                     </div>
                   </div>
