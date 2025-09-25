@@ -22,17 +22,17 @@
                     <ul class="list-group mb-3">
                         @php $tong = 0; @endphp
                         @foreach($checkoutCart as $id => $item)
-                            @php
-                                $s = $item['price'] * ($item['quantity'] ?? 1);
-                                $tong += $s;
-                            @endphp
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div>
-                                    <h6 class="my-0">{{ $item['training_name'] ?? $item['name'] ?? 'Không có tên' }}</h6>
-                                    <small class="text-muted">{{ number_format($item['price'], 0) }} VND</small>
-                                </div>
-                                <span class="text-muted">{{ number_format($s, 0) }} VND</span>
-                            </li>
+                        @php
+                        $s = $item['price'] * ($item['quantity'] ?? 1);
+                        $tong += $s;
+                        @endphp
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">{{ $item['training_name'] ?? $item['name'] ?? 'Không có tên' }}</h6>
+                                <small class="text-muted">{{ number_format($item['price'], 0) }} VND</small>
+                            </div>
+                            <span class="text-muted">{{ number_format($s, 0) }} VND</span>
+                        </li>
                         @endforeach
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Tổng thành tiền</span>
@@ -52,32 +52,34 @@
                         <div class="col-md-12">
                             <label for="kh_ten">Họ tên</label>
                             <input type="text" class="form-control" name="kh_ten" id="kh_ten"
-                                value="{{ Auth::user()->full_name ?? '' }}" required>
+                                value="{{ session('fullname') ?? Auth::user()->full_name ?? '' }}" required>
                         </div>
                         <div class="col-md-12">
                             <label for="kh_diachi">Địa chỉ</label>
                             <input type="text" class="form-control" name="kh_diachi" id="kh_diachi"
-                                value="{{ Auth::user()->address ?? '' }}" required>
+                                value="{{ session('address') ?? Auth::user()->address ?? '' }}" required>
                         </div>
                         <div class="col-md-12">
                             <label for="kh_dienthoai">Điện thoại</label>
                             <input type="text" class="form-control" name="kh_dienthoai" id="kh_dienthoai"
-                                value="{{ Auth::user()->phone_number ?? '' }}" required>
+                                value="{{ session('phone_number') ?? Auth::user()->phone_number ?? '' }}" required>
                         </div>
                         <div class="col-md-12">
                             <label for="kh_email">Email</label>
                             <input type="email" class="form-control" name="kh_email" id="kh_email"
-                                value="{{ Auth::user()->email ?? '' }}" required>
+                                value="{{ session('email') ?? Auth::user()->email ?? '' }}" required>
                         </div>
                     </div>
                     <h4 class="mb-3">Hình thức thanh toán</h4>
                     <div class="d-block my-3">
                         <div class="custom-control custom-radio">
-                            <input id="httt-1" name="httt_ma" type="radio" class="custom-control-input" required value="1">
+                            <input id="httt-1" name="httt_ma" type="radio" class="custom-control-input" required
+                                value="1">
                             <label class="custom-control-label" for="httt-1">Tiền mặt</label>
                         </div>
                         <div class="custom-control custom-radio">
-                            <input id="httt-2" name="httt_ma" type="radio" class="custom-control-input" required value="2">
+                            <input id="httt-2" name="httt_ma" type="radio" class="custom-control-input" required
+                                value="2">
                             <label class="custom-control-label" for="httt-2">Chuyển khoản</label>
                         </div>
                     </div>

@@ -17,7 +17,14 @@ class DanhMucLopTap extends Model
         'category_name', 'price', 'duration_days', 'deleted'
     ];
     public $timestamps = false;
-
+    public static function get($id)
+    {
+        return self::where('id', $id)->where('deleted', 0)->first();
+    }
+    public static function allActive()
+    {
+        return self::where('deleted', 0)->get();
+    }
     // Legacy accessors to keep old views consistent
     public function getTenloptapAttribute() { return $this->attributes['category_name'] ?? null; }
     public function getGiaAttribute() { return $this->attributes['price'] ?? null; }
